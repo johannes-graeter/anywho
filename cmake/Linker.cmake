@@ -1,4 +1,4 @@
-macro(myproject_configure_linker project_name)
+macro(anywho_configure_linker project_name)
   include(CheckCXXCompilerFlag)
 
   set(USER_LINKER_OPTION
