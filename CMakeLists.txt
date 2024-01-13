@@ -106,7 +106,7 @@ include(cmake/PackageProject.cmake)
 # we know we want to ship
 anywho_package_project(
   TARGETS
-  intro
+  example
   anywho_options
   anywho_warnings
   # FIXME: this does not work! CK
