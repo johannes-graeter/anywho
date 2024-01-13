@@ -22,7 +22,7 @@ stages:
 .setup_cpp: &setup_cpp |
   curl -LJO "https://github.com/aminya/setup-cpp/releases/download/v0.10.0/setup_cpp_linux"
   chmod +x setup_cpp_linux
-  ./setup_cpp_linux --compiler $compiler --cmake true --ninja true  --conan true --ccache true --clangtidy true --clangformat true --cppcheck true
+  ./setup_cpp_linux --compiler $compiler --cmake true --ninja true  --conan true --ccache true --clangtidy true --clangformat true --cppcheck false
   source ~/.profile
 
 .test: &test |

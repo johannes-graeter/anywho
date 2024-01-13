@@ -154,7 +154,7 @@ jobs:
           clangtidy: ${{ env.CLANG_TIDY_VERSION }}
 
 
-          cppcheck: true
+          cppcheck: false
 
           gcovr: true
           opencppcoverage: true

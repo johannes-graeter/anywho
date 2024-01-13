@@ -9,11 +9,11 @@
 		// Update 'LLVM_VER' to pick clang version. Options: [10, 11, 12, 13]. Default: 13
 		// Update 'USE_CLANG' to set clang as the default C and C++ compiler. Options: [1, null]. Default null
 		"args": {
-		     "VARIANT": "focal",
-		     "GCC_VER": "11",
-		     "LLVM_VER": "17",
-	             "USE_CLANG": "null"
-		} 
+			"VARIANT": "jammy",
+			"GCC_VER": "12",
+			"LLVM_VER": "17",
+			"USE_CLANG": "1"
+		}
 	},
 	"runArgs": [
 		"--cap-add=SYS_PTRACE",
@@ -48,6 +48,6 @@
 	"features": {
 		"git": "latest",
 		"git-lfs": "latest",
-		"powershell": "latest"
+		// "powershell": "latest"
 	}
 }
