@@ -34,7 +34,6 @@ target_link_libraries(
   tests
   PRIVATE anywho::anywho_warnings
           anywho::anywho_options
-          fmt::fmt
           anywho::error
           Catch2::Catch2WithMain)
 

@@ -28,14 +28,14 @@ Anywho since context usually gets concatenated, longer messages are too verbose.
 1. 
 ```cpp
  // std::expected<std::string, IOError> readFile(const std::string path);
- std::string content = ANYWHO(readFile(path).transform_error([](const auto& error){return error.add_context(fmt::format("Failed to read instrs from {}", path)})));
+ std::string content = ANYWHO(readFile(path).transform_error([](const auto& error){return error.add_context(std::format("Failed to read instrs from {}", path)})));
 ```
 This is too long.
 
 2.
 ```cpp
  // std::expected<std::string, IOError> readFile(const std::string path);
- std::string content = ANYWHO(readFile(path).with_context(fmt::format("Failed to read instrs from {}", path)));
+ std::string content = ANYWHO(readFile(path).with_context(std::format("Failed to read instrs from {}", path)));
 ```
 would be better very similar to rust anyhow.
 We could Define `anywho::Result<Type, Error>` that defines with_context and casts to `std::expected<Type,Error>`.
@@ -43,7 +43,7 @@ We could Define `anywho::Result<Type, Error>` that defines with_context and cast
 3. Add function
 ```cpp
  // std::expected<std::string, IOError> readFile(const std::string path);
- std::string content = ANYWHO(with_context(readFile(path), fmt::format("Failed to read instrs from {}", path)));
+ std::string content = ANYWHO(with_context(readFile(path), std::format("Failed to read instrs from {}", path)));
 ```
 4. Use context class instead of string to save also line and file
 

@@ -8,10 +8,6 @@ function(anywho_setup_dependencies)
   # For each dependency, see if it's
   # already been provided to us by a parent project
 
-  if(NOT TARGET fmtlib::fmtlib)
-    cpmaddpackage("gh:fmtlib/fmt#9.1.0")
-  endif()
-
   if(NOT TARGET spdlog::spdlog)
     cpmaddpackage(
       NAME
@@ -20,8 +16,7 @@ function(anywho_setup_dependencies)
       1.11.0
       GITHUB_REPOSITORY
       "gabime/spdlog"
-      OPTIONS
-      "SPDLOG_FMT_EXTERNAL ON")
+      OPTIONS)
   endif()
 
   if(NOT TARGET Catch2::Catch2WithMain)
