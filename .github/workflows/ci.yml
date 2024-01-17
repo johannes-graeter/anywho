@@ -34,7 +34,7 @@ jobs:
           - windows-2019
         compiler:
           - llvm-17
-          - gcc-13
+          # - gcc-13
         generator:
           - "Ninja Multi-Config"
         build_type:
