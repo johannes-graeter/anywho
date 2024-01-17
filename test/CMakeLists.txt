@@ -2,6 +2,12 @@ cmake_minimum_required(VERSION 3.15...3.28)
 
 project(CmakeConfigPackageTests LANGUAGES CXX)
 
+# Only set the cxx_standard if it is not set by someone else
+set(CMAKE_CXX_STANDARD 23)
+
+# TODO (johannes-graeter) remove this once libc++ is shipped with std::expected
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+
 # ---- Test as standalone project the exported config package ----
 
 if(PROJECT_IS_TOP_LEVEL OR TEST_INSTALLED_VERSION)
