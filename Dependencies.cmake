@@ -6,7 +6,7 @@ include(cmake/CPM.cmake)
 function(anywho_setup_dependencies)
   # For each dependency, see if it's
   # already been provided to us by a parent project
-  if(NOT TARGET Catch2::Catch2WithMain)
-    cpmaddpackage("gh:catchorg/Catch2@3.3.2")
-  endif()
+  # if(NOT TARGET Catch2::Catch2WithMain)
+  #   cpmaddpackage("gh:catchorg/Catch2@3.3.2")
+  # endif()
 endfunction()

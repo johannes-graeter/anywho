@@ -2,12 +2,6 @@ cmake_minimum_required(VERSION 3.15...3.28)
 
 project(CmakeConfigPackageTests LANGUAGES CXX)
 
-# Only set the cxx_standard if it is not set by someone else
-set(CMAKE_CXX_STANDARD 23)
-
-# TODO (johannes-graeter) remove this once libc++ is shipped with std::expected
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
-
 # ---- Test as standalone project the exported config package ----
 
 if(PROJECT_IS_TOP_LEVEL OR TEST_INSTALLED_VERSION)
@@ -23,7 +17,7 @@ endif()
 
 # ---- Dependencies ----
 
-include(${Catch2_SOURCE_DIR}/extras/Catch.cmake)
+# include(${Catch2_SOURCE_DIR}/extras/Catch.cmake)
 
 # Provide a simple smoke test to make sure that the CLI works and can display a --help message
 # add_test(NAME cli.has_help COMMAND example --help)
@@ -41,7 +35,8 @@ target_link_libraries(
   PRIVATE anywho::anywho_warnings
           anywho::anywho_options
           anywho::error
-          Catch2::Catch2WithMain)
+          # Catch2::Catch2WithMain
+          )
 
 if(WIN32 AND BUILD_SHARED_LIBS)
   add_custom_command(
@@ -73,7 +68,8 @@ target_link_libraries(
   PRIVATE anywho::anywho_warnings
           anywho::anywho_options
           # anywho::error
-          Catch2::Catch2WithMain)
+          # Catch2::Catch2WithMain
+          )
 
 catch_discover_tests(
   constexpr_tests
@@ -96,7 +92,8 @@ target_link_libraries(
   PRIVATE anywho::anywho_warnings
           anywho::anywho_options
           # anywho::error
-          Catch2::Catch2WithMain)
+          # Catch2::Catch2WithMain
+          )
 target_compile_definitions(relaxed_constexpr_tests PRIVATE -DCATCH_CONFIG_RUNTIME_STATIC_REQUIRE)
 
 catch_discover_tests(
