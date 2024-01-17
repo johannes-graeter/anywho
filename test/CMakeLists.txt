@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.15...3.28)
 
 project(CmakeConfigPackageTests LANGUAGES CXX)
 
+find_package(GTest REQUIRED)
+# include_directories(${GTEST_INCLUDE_DIRS})
+include(GoogleTest)
+
 # ---- Test as standalone project the exported config package ----
 
 if(PROJECT_IS_TOP_LEVEL OR TEST_INSTALLED_VERSION)
@@ -15,9 +19,10 @@ if(PROJECT_IS_TOP_LEVEL OR TEST_INSTALLED_VERSION)
   endif()
 endif()
 
+
 # ---- Dependencies ----
 
-include(${Catch2_SOURCE_DIR}/extras/Catch.cmake)
+# include(${Catch2_SOURCE_DIR}/extras/Catch.cmake)
 
 # Provide a simple smoke test to make sure that the CLI works and can display a --help message
 # add_test(NAME cli.has_help COMMAND example --help)
@@ -32,11 +37,14 @@ include(${Catch2_SOURCE_DIR}/extras/Catch.cmake)
 add_executable(tests tests.cpp)
 target_link_libraries(
   tests
-  PRIVATE anywho::anywho_warnings
+  PRIVATE
+          anywho::anywho_warnings
           anywho::anywho_options
           anywho::error
-          Catch2::Catch2WithMain
+          # Catch2::Catch2WithMain
+          GTest::gtest_main GTest::gtest pthread
           )
+# endif()
 
 if(WIN32 AND BUILD_SHARED_LIBS)
   add_custom_command(
@@ -48,7 +56,8 @@ endif()
 
 # automatically discover tests that are defined in catch based test files you can modify the unittests. Set TEST_PREFIX
 # to whatever you want, or use different for different binaries
-catch_discover_tests(
+# catch_discover_tests(
+gtest_discover_tests(
   tests
   TEST_PREFIX
   "unittests."
@@ -68,10 +77,12 @@ target_link_libraries(
   PRIVATE anywho::anywho_warnings
           anywho::anywho_options
           # anywho::error
-          Catch2::Catch2WithMain
+          # Catch2::Catch2WithMain
+          GTest::gtest_main GTest::gtest pthread
           )
 
-catch_discover_tests(
+# catch_discover_tests(
+gtest_discover_tests(
   constexpr_tests
   TEST_PREFIX
   "constexpr."
@@ -92,11 +103,13 @@ target_link_libraries(
   PRIVATE anywho::anywho_warnings
           anywho::anywho_options
           # anywho::error
-          Catch2::Catch2WithMain
+          # Catch2::Catch2WithMain
+          GTest::gtest_main GTest::gtest pthread
           )
 target_compile_definitions(relaxed_constexpr_tests PRIVATE -DCATCH_CONFIG_RUNTIME_STATIC_REQUIRE)
 
-catch_discover_tests(
+# catch_discover_tests(
+gtest_discover_tests(
   relaxed_constexpr_tests
   TEST_PREFIX
   "relaxed_constexpr."

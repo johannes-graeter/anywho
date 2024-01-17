@@ -82,6 +82,13 @@ RUN apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
     apt-get install -y --no-install-recommends \
         doxygen graphviz ccache cppcheck
 
+WORKDIR /home/
+RUN git clone https://github.com/google/googletest.git
+WORKDIR /home/googletest
+RUN CC=clang CXX=clang++ CXXFLAGS="-stdlib=libc++" cmake -S . -B ./build && cd build && make && make install && cd ..
+WORKDIR /home
+RUN rm -r /home/googletest
+
 # Install include-what-you-use
 ENV IWYU /home/iwyu
 ENV IWYU_BUILD ${IWYU}/build
