@@ -158,6 +158,11 @@ jobs:
           gcovr: true
           opencppcoverage: true
 
+      - name: Install googletest
+        run : |
+          git clone https://github.com/google/googletest.git && cd googletest
+          CC=clang CXX=clang++ CXXFLAGS="-stdlib=libc++" cmake -S . -B ./build && cd build && make && make install && cd ..
+
       - name: Configure CMake
         run: |
           cmake -S . -B ./build -G "${{matrix.generator}}" -D${{ env.PROJECT_NAME }}_ENABLE_IPO=${{matrix.enable_ipo }} -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -D${{ env.PROJECT_NAME }}_PACKAGING_MAINTAINER_MODE:BOOL=${{matrix.packaging_maintainer_mode}} -D${{ env.PROJECT_NAME }}_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} -DGIT_SHA:STRING=${{ github.sha }}
