@@ -100,18 +100,17 @@ if(CMAKE_SKIP_INSTALL_RULES)
   return()
 endif()
 
-include(cmake/PackageProject.cmake)
+# include(cmake/PackageProject.cmake)
 
 # Add other targets that you want installed here, by default we just package the one executable
 # we know we want to ship
-anywho_package_project(
-  TARGETS
-  example
-  anywho_options
-  anywho_warnings
-  # FIXME: this does not work! CK
-  # PRIVATE_DEPENDENCIES_CONFIGURED project_options project_warnings
-)
+# anywho_package_project(
+#   TARGETS
+#   anywho_options
+#   anywho_warnings
+#   # FIXME: this does not work! CK
+#   # PRIVATE_DEPENDENCIES_CONFIGURED project_options project_warnings
+# )
 
 # Experience shows that explicit package naming can help make it easier to sort
 # out potential ABI related issues before they start, while helping you

@@ -1,6 +1,6 @@
 # design of error
 - interface is enforced by a concept that enforces operators to compare error classes and instances, print the error message
-- on implementinng an error a static array of chars is given that says what has gone wrong
+- on implementing an error a static array of chars is given that says what has gone wrong
 - form that a static hash is generated that serves as error uid
 - errors can be chained so that we can track down what is the root cause of a surfacing error. this is implemented by a parent error instance that is owned by the error itself.
 - keep all memory stack allocated for speed.
