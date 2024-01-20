@@ -7,9 +7,6 @@ cmake_minimum_required(VERSION 3.27)
 # Only set the cxx_standard if it is not set by someone else
 set(CMAKE_CXX_STANDARD 23)
 
-# TODO (johannes-graeter) remove this once libc++ is shipped with std::expected
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
-
 # strongly encouraged to enable this globally to avoid conflicts between
 # -Wpedantic being enabled and -std=c++23 and -std=gnu++23 for example
 # when compiling with PCH enabled
@@ -26,6 +23,15 @@ project(
 include(cmake/PreventInSourceBuilds.cmake)
 include(ProjectOptions.cmake)
 
+# TODO (johannes-graeter) remove this once libc++ is shipped with std::expected
+message(WARNING ${CMAKE_CXX_COMPILER_ID})
+if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang.*")
+  message(WARNING "CLANG with c++")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+#elseif(cmake_cxx_compiler_id matches ".*gnu.*")
+#  message(WARNING "GCC with stdc++")
+#  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libstdc++")
+endif()
 
 anywho_setup_options()
 
