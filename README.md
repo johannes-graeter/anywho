@@ -18,6 +18,9 @@ This repo adds an error type and some convenience functions to come closer to Ru
 * cutting edge c++ features
 More details in [here](design.md)
 
+# Current support
+* Ubuntu 22.04, Clang-17
+
 ## More Details
 
  * [Dependency Setup](README_dependencies.md)
