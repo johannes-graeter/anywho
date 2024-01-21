@@ -34,9 +34,9 @@ target_link_libraries(
   tests
   PRIVATE anywho::anywho_warnings
           anywho::anywho_options
-          fmt::fmt
           anywho::error
-          Catch2::Catch2WithMain)
+          Catch2::Catch2WithMain
+          )
 
 if(WIN32 AND BUILD_SHARED_LIBS)
   add_custom_command(
@@ -68,7 +68,8 @@ target_link_libraries(
   PRIVATE anywho::anywho_warnings
           anywho::anywho_options
           # anywho::error
-          Catch2::Catch2WithMain)
+          Catch2::Catch2WithMain
+          )
 
 catch_discover_tests(
   constexpr_tests
@@ -91,7 +92,8 @@ target_link_libraries(
   PRIVATE anywho::anywho_warnings
           anywho::anywho_options
           # anywho::error
-          Catch2::Catch2WithMain)
+          Catch2::Catch2WithMain
+          )
 target_compile_definitions(relaxed_constexpr_tests PRIVATE -DCATCH_CONFIG_RUNTIME_STATIC_REQUIRE)
 
 catch_discover_tests(

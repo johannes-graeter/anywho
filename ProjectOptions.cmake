@@ -79,11 +79,11 @@ macro(anywho_setup_options)
   endif()
 
   anywho_check_libfuzzer_support(LIBFUZZER_SUPPORTED)
-  if(LIBFUZZER_SUPPORTED AND (anywho_ENABLE_SANITIZER_ADDRESS OR anywho_ENABLE_SANITIZER_THREAD OR anywho_ENABLE_SANITIZER_UNDEFINED))
-    set(DEFAULT_FUZZER ON)
-  else()
+  # if(LIBFUZZER_SUPPORTED AND (anywho_ENABLE_SANITIZER_ADDRESS OR anywho_ENABLE_SANITIZER_THREAD OR anywho_ENABLE_SANITIZER_UNDEFINED))
+  #   set(DEFAULT_FUZZER ON)
+  # else()
     set(DEFAULT_FUZZER OFF)
-  endif()
+  # endif()
 
   option(anywho_BUILD_FUZZ_TESTS "Enable fuzz testing executable" ${DEFAULT_FUZZER})
 

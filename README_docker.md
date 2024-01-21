@@ -8,16 +8,16 @@ docker build -f ./.devcontainer/Dockerfile --tag=my_project:latest .
 docker run -it my_project:latest
 ```
 
-This command will put you in a `bash` session in a Ubuntu 20.04 Docker container,
+This command will put you in a `bash` session in a Ubuntu 22.04 Docker container,
 with all of the tools listed in the [Dependencies](#dependencies) section already installed.
-Additionally, you will have `g++-11` and `clang++-13` installed as the default
+Additionally, you will have `g++-13` and `clang++-17` installed as the default
 versions of `g++` and `clang++`.
 
 If you want to build this container using some other versions of gcc and clang,
 you may do so with the `GCC_VER` and `LLVM_VER` arguments:
 
 ```bash
-docker build --tag=myproject:latest --build-arg GCC_VER=10 --build-arg LLVM_VER=11 .
+docker build --tag=myproject:latest --build-arg GCC_VER=13 --build-arg LLVM_VER=17 .
 ```
 
 The CC and CXX environment variables are set to GCC version 11 by default.
