@@ -165,6 +165,13 @@ jobs:
 
           gcovr: true
           opencppcoverage: true
+      - name: Install libc++
+        run: |
+          apt-get update
+          apt-get install -y \
+            libc++-${{ env.CLANG_TIDY_VERSION}}-dev \
+            libc++abi-${{ env.CLANG_TIDY_VERSION}}-dev
+          apt-get clean
 
       - name: Configure CMake
         run: |
