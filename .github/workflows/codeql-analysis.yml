@@ -20,6 +20,8 @@ on:
   schedule:
     - cron: '38 0 * * 5'
 
+env:
+  CLANG_VERSION: "17"
 
 jobs:
   analyze:
@@ -38,7 +40,7 @@ jobs:
         # Learn more about CodeQL language support at https://git.io/codeql-language-support
         compiler:
           # you can specify the version after `-` like "llvm-13.0.0".
-          - llvm-17
+          - llvm-${{ env.CLANG_VERSION }}
           # - gcc-13
         generator:
           - "Ninja Multi-Config"
@@ -86,8 +88,8 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y \
-          libc++-${{ env.CLANG_TIDY_VERSION}}-dev \
-          libc++abi-${{ env.CLANG_TIDY_VERSION}}-dev
+          libc++-${{ env.CLANG_VERSION}}-dev \
+          libc++abi-${{ env.CLANG_VERSION}}-dev
         sudo apt-get clean
 
       # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
