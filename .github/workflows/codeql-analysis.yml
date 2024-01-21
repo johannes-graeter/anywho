@@ -40,7 +40,7 @@ jobs:
         # Learn more about CodeQL language support at https://git.io/codeql-language-support
         compiler:
           # you can specify the version after `-` like "llvm-13.0.0".
-          - llvm-${{ env.CLANG_VERSION }}
+          - llvm-17
           # - gcc-13
         generator:
           - "Ninja Multi-Config"
@@ -83,6 +83,14 @@ jobs:
 
         gcovr: false
         opencppcoverage: false
+    
+    
+    - name: Check for llvm version mismatches
+      if: ${{ contains(matrix.compiler, 'llvm') && !contains(matrix.compiler, env.CLANG_VERSION) }}
+      uses: actions/github-script@v3
+      with:
+        script: |
+          core.setFailed('There is a mismatch between configured llvm compiler and libc++ version chosen')
 
     - name: Install libc++
       run: |
