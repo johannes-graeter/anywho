@@ -1,10 +1,12 @@
 #include <anywho/concepts.hpp>
 #include <anywho/direct_return.hpp>
+#include <anywho/error_factories.hpp>
 #include <anywho/errors.hpp>
 #include <anywho/with_context.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <expected>
 #include <format>
+#include <type_traits>
 
 namespace {
 std::expected<int, std::string> myfuncUnexpected() { return std::unexpected("my_msg"); }
@@ -36,6 +38,36 @@ struct DummyError final
 
 std::expected<int, DummyError> testError() { return std::unexpected(DummyError{}); }
 
+bool positiveOnlySquare(int num, int &output)
+{
+  if (num > 0) {
+    output = num * num;
+
+    return true;
+  }
+
+  return false;
+}
+
+std::error_code positiveOnlySquareWithErrorCode(int num, int &output)
+{
+  if (num > 0) {
+    output = num * num;
+
+    return std::error_code{};
+  }
+
+  return std::make_error_code(std::errc::result_out_of_range);
+}
+
+int positiveOnlySquareWithException(int num)
+{
+  if (num < 0) {
+    throw std::runtime_error("is negative");
+  } else {
+    return num * num;
+  }
+}
 }// namespace
 
 TEST_CASE("error get returned with anywho", "[direct_return]")
@@ -97,4 +129,76 @@ TEST_CASE("test FixedSizeError overflow", "[errors]")
   err.consume_context({ .message = "abc", .line = line, .file = "tests.cpp" });
   err.consume_context({ .message = "abc2", .line = line + 1, .file = "tests.cpp" });
   REQUIRE(err.format() == err.message() + "::tests.cp");
+}
+
+TEST_CASE("test truth/false error factor, false case", "[error_factories]")
+{
+  int output = 0;
+  const std::expected<int, anywho::GenericError> exp =
+    anywho::make_error(positiveOnlySquare(-3, output), output, anywho::GenericError{});
+  REQUIRE(!exp.has_value());
+}
+
+TEST_CASE("test truth/false error factor, truth case", "[error_factories]")
+{
+  int output = 0;
+  const std::expected<int, anywho::GenericError> exp =
+    anywho::make_error(positiveOnlySquare(3, output), output, anywho::GenericError{});
+  REQUIRE(exp.has_value());
+  REQUIRE(exp.value() == 9);
+}
+
+TEST_CASE("test error from code factory, false case", "[error_factories]")
+{
+  int output = 0;
+  std::expected<int, anywho::ErrorFromCode> exp =
+    anywho::make_error(positiveOnlySquareWithErrorCode(-3, output), output);
+  REQUIRE(!exp.has_value());
+  REQUIRE(exp.error().get_code() == std::errc::result_out_of_range);
+}
+
+TEST_CASE("test error from code factory, truth case", "[error_factories]")
+{
+  int output = 0;
+  std::expected<int, anywho::ErrorFromCode> exp =
+    anywho::make_error(positiveOnlySquareWithErrorCode(3, output), output);
+  REQUIRE(exp.has_value());
+  REQUIRE(exp.value() == 9);
+}
+
+TEST_CASE("test error from throwable factory, false case", "[error_factories]")
+{
+  // because of a bug in libc++ and clang we need to deactivate AddressSanitizer: alloc-dealloc-mismatch (see
+  // https://github.com/llvm/llvm-project/issues/52771)
+  {
+    const std::expected<int, anywho::ErrorFromException> exp =
+      anywho::make_error_from_throwable<int, std::runtime_error>([]() { return positiveOnlySquareWithException(-3); });
+    REQUIRE(!exp.has_value());
+  }
+
+  {
+    const std::expected<int, anywho::GenericError> exp =
+      anywho::make_any_error_from_throwable<int, anywho::GenericError, std::runtime_error>(
+        []() { return positiveOnlySquareWithException(-3); }, anywho::GenericError{});
+    REQUIRE(!exp.has_value());
+  }
+}
+
+
+TEST_CASE("test error from throwable factory, truth case", "[error_factories]")
+{
+  {
+    const std::expected<int, anywho::ErrorFromException> exp =
+      anywho::make_error_from_throwable<int, std::runtime_error>([]() { return positiveOnlySquareWithException(3); });
+    REQUIRE(exp.has_value());
+    REQUIRE(exp.value() == 9);
+  }
+
+  {
+    const std::expected<int, anywho::GenericError> exp =
+      anywho::make_any_error_from_throwable<int, anywho::GenericError, std::runtime_error>(
+        []() { return positiveOnlySquareWithException(3); }, anywho::GenericError{});
+    REQUIRE(exp.has_value());
+    REQUIRE(exp.value() == 9);
+  }
 }

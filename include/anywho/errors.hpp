@@ -1,7 +1,10 @@
 #pragma once
 
 #include "context.hpp"
+#include <exception>
+#include <memory>
 #include <string>
+#include <system_error>
 #include <vector>
 
 namespace anywho {
@@ -9,6 +12,8 @@ namespace anywho {
 class GenericError
 {
 public:
+  virtual ~GenericError() = default;
+
   [[nodiscard]] std::string format() const
   {
     // This would be nicer with ranges like but we would need more deps
@@ -26,14 +31,14 @@ public:
   }
 
   void consume_context(anywho::Context &&context) { contexts_.emplace_back(std::move(context)); }
-  [[nodiscard]] static std::string message() { return "generic error happened"; }
-  [[nodiscard]] static size_t id() { return std::hash<std::string>{}(message()); }
+  [[nodiscard]] virtual constexpr std::string message() const { return "generic error happened"; }
+  [[nodiscard]] size_t id() const { return std::hash<std::string>{}(message()); }
 
-private:
+protected:
   std::vector<Context> contexts_{};
 };
 
-template<uint Size> class FixedSizeError
+template<uint Size> class FixedSizeError final
 {
 public:
   [[nodiscard]] std::string format() const { return message() + static_cast<std::string>(message_); }
@@ -49,4 +54,37 @@ public:
 private:
   FixedString<Size> message_{};
 };
+
+class ErrorFromCode final : public GenericError
+{
+public:
+  ErrorFromCode(const std::error_code &code) : code_{ code } {}
+  ErrorFromCode(std::error_code &&code) : code_{ std::move(code) } {}
+  [[nodiscard]] constexpr std::string message() const override
+  {
+    return std::format("error happened with code {} and message {}", code_.value(), code_.message());
+  }
+
+  [[nodiscard]] const std::error_code &get_code() const { return code_; }
+
+private:
+  std::error_code code_;
+};
+
+class ErrorFromException final : public GenericError
+{
+public:
+  ErrorFromException(const std::shared_ptr<std::exception> &exc) : exc_{ exc } {}
+  [[nodiscard]] constexpr std::string message() const override
+  {
+    return std::format("error happened with exception '{}'", exc_->what());
+  }
+
+  [[nodiscard]] const std::shared_ptr<std::exception> &get_exception_ptr() const { return exc_; }
+
+private:
+  ///@brief Pointer to exception interface. Needs to be shared_ptr, since std::expected needs copyiability.
+  std::shared_ptr<std::exception> exc_;
+};
+
 }// namespace anywho

@@ -117,6 +117,9 @@ ENV CXX=${USE_CLANG:+"clang++"}
 ENV CC=${CC:-"gcc"}
 ENV CXX=${CXX:-"g++"}
 
+# caused by a bug in libc++ and clang we need to deactivate it for the tests (https://github.com/llvm/llvm-project/issues/52771))
+ENV ASAN_OPTIONS=alloc_dealloc_mismatch=0
+
 # Include project
 ADD . /workspaces/cpp_starter_project
 WORKDIR /workspaces/cpp_starter_project

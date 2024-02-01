@@ -19,5 +19,12 @@ namespace concepts {
     } -> std::unsigned_integral;
     obj.consume_context(std::move(c));
   };
+
+  template<typename T>
+  concept Catchable = requires(T &obj) {
+    {
+      obj.what()
+    } -> std::convertible_to<std::string>;
+  };
 }// namespace concepts
 }// namespace anywho
