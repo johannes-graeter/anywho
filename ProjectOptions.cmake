@@ -45,21 +45,19 @@ macro(anywho_setup_options)
     option(anywho_ENABLE_PCH "Enable precompiled headers" OFF)
     option(anywho_ENABLE_CACHE "Enable ccache" OFF)
   else()
-    option(anywho_ENABLE_IPO "Enable IPO/LTO" ON) #
-    option(anywho_WARNINGS_AS_ERRORS "Treat Warnings As Errors" ON)#
+    option(anywho_ENABLE_IPO "Enable IPO/LTO" ON)
+    option(anywho_WARNINGS_AS_ERRORS "Treat Warnings As Errors" ON)
     option(anywho_ENABLE_USER_LINKER "Enable user-selected linker" OFF)
-    #option(anywho_ENABLE_SANITIZER_ADDRESS "Enable address sanitizer" ${SUPPORTS_ASAN})
-    option(anywho_ENABLE_SANITIZER_ADDRESS "Enable address sanitizer" OFF)
+    option(anywho_ENABLE_SANITIZER_ADDRESS "Enable address sanitizer" ${SUPPORTS_ASAN})
     option(anywho_ENABLE_SANITIZER_LEAK "Enable leak sanitizer" OFF)
-    #option(anywho_ENABLE_SANITIZER_UNDEFINED "Enable undefined sanitizer" ${SUPPORTS_UBSAN})
-    option(anywho_ENABLE_SANITIZER_UNDEFINED "Enable undefined sanitizer" OFF)
+    option(anywho_ENABLE_SANITIZER_UNDEFINED "Enable undefined sanitizer" ${SUPPORTS_UBSAN})
     option(anywho_ENABLE_SANITIZER_THREAD "Enable thread sanitizer" OFF)
     option(anywho_ENABLE_SANITIZER_MEMORY "Enable memory sanitizer" OFF)
     option(anywho_ENABLE_UNITY_BUILD "Enable unity builds" OFF)
     option(anywho_ENABLE_CLANG_TIDY "Enable clang-tidy" OFF)#
     option(anywho_ENABLE_CPPCHECK "Enable cpp-check analysis" OFF)
     option(anywho_ENABLE_PCH "Enable precompiled headers" OFF)
-    option(anywho_ENABLE_CACHE "Enable ccache" ON) #
+    option(anywho_ENABLE_CACHE "Enable ccache" ON)
   endif()
 
   if(NOT PROJECT_IS_TOP_LEVEL)
