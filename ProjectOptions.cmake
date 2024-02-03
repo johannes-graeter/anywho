@@ -54,7 +54,7 @@ macro(anywho_setup_options)
     option(anywho_ENABLE_SANITIZER_THREAD "Enable thread sanitizer" OFF)
     option(anywho_ENABLE_SANITIZER_MEMORY "Enable memory sanitizer" OFF)
     option(anywho_ENABLE_UNITY_BUILD "Enable unity builds" OFF)
-    option(anywho_ENABLE_CLANG_TIDY "Enable clang-tidy" OFF)#
+    option(anywho_ENABLE_CLANG_TIDY "Enable clang-tidy" ON)
     option(anywho_ENABLE_CPPCHECK "Enable cpp-check analysis" OFF)
     option(anywho_ENABLE_PCH "Enable precompiled headers" OFF)
     option(anywho_ENABLE_CACHE "Enable ccache" ON)
