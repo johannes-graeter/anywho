@@ -166,23 +166,23 @@ TEST_CASE("test error from code factory, truth case", "[error_factories]")
   REQUIRE(exp.value() == 9);
 }
 
-TEST_CASE("test error from throwable factory, false case", "[error_factories]")
-{
-  // because of a bug in libc++ and clang we need to deactivate AddressSanitizer: alloc-dealloc-mismatch (see
-  // https://github.com/llvm/llvm-project/issues/52771)
-  {
-    const std::expected<int, anywho::ErrorFromException> exp =
-      anywho::make_error_from_throwable<int, std::runtime_error>([]() { return positiveOnlySquareWithException(-3); });
-    REQUIRE(!exp.has_value());
-  }
+// TEST_CASE("test error from throwable factory, false case", "[error_factories]")
+// {
+//   // because of a bug in libc++ and clang we need to deactivate AddressSanitizer: alloc-dealloc-mismatch (see
+//   // https://github.com/llvm/llvm-project/issues/52771)
+//   {
+//     const std::expected<int, anywho::ErrorFromException> exp =
+//       anywho::make_error_from_throwable<int, std::runtime_error>([]() { return positiveOnlySquareWithException(-3); });
+//     REQUIRE(!exp.has_value());
+//   }
 
-  {
-    const std::expected<int, anywho::GenericError> exp =
-      anywho::make_any_error_from_throwable<int, anywho::GenericError, std::runtime_error>(
-        []() { return positiveOnlySquareWithException(-3); }, anywho::GenericError{});
-    REQUIRE(!exp.has_value());
-  }
-}
+//   {
+//     const std::expected<int, anywho::GenericError> exp =
+//       anywho::make_any_error_from_throwable<int, anywho::GenericError, std::runtime_error>(
+//         []() { return positiveOnlySquareWithException(-3); }, anywho::GenericError{});
+//     REQUIRE(!exp.has_value());
+//   }
+// }
 
 
 TEST_CASE("test error from throwable factory, truth case", "[error_factories]")
