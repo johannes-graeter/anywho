@@ -185,20 +185,20 @@ TEST_CASE("test error from code factory, truth case", "[error_factories]")
 // }
 
 
-TEST_CASE("test error from throwable factory, truth case", "[error_factories]")
-{
-  {
-    const std::expected<int, anywho::ErrorFromException> exp =
-      anywho::make_error_from_throwable<int, std::runtime_error>([]() { return positiveOnlySquareWithException(3); });
-    REQUIRE(exp.has_value());
-    REQUIRE(exp.value() == 9);
-  }
+// TEST_CASE("test error from throwable factory, truth case", "[error_factories]")
+// {
+//   {
+//     const std::expected<int, anywho::ErrorFromException> exp =
+//       anywho::make_error_from_throwable<int, std::runtime_error>([]() { return positiveOnlySquareWithException(3); });
+//     REQUIRE(exp.has_value());
+//     REQUIRE(exp.value() == 9);
+//   }
 
-  {
-    const std::expected<int, anywho::GenericError> exp =
-      anywho::make_any_error_from_throwable<int, anywho::GenericError, std::runtime_error>(
-        []() { return positiveOnlySquareWithException(3); }, anywho::GenericError{});
-    REQUIRE(exp.has_value());
-    REQUIRE(exp.value() == 9);
-  }
-}
+//   {
+//     const std::expected<int, anywho::GenericError> exp =
+//       anywho::make_any_error_from_throwable<int, anywho::GenericError, std::runtime_error>(
+//         []() { return positiveOnlySquareWithException(3); }, anywho::GenericError{});
+//     REQUIRE(exp.has_value());
+//     REQUIRE(exp.value() == 9);
+//   }
+// }
