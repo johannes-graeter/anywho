@@ -160,7 +160,6 @@ jobs:
           ccache: true
           clangtidy: ${{ env.CLANG_TIDY_VERSION }}
 
-
           cppcheck: false
 
           gcovr: true

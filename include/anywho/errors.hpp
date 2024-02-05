@@ -1,7 +1,6 @@
 #pragma once
 
 #include "context.hpp"
-#include <exception>
 #include <memory>
 #include <string>
 #include <system_error>
@@ -69,22 +68,6 @@ public:
 
 private:
   std::error_code code_;
-};
-
-class ErrorFromException final : public GenericError
-{
-public:
-  ErrorFromException(const std::shared_ptr<std::exception> &exc) : exc_{ exc } {}
-  [[nodiscard]] constexpr std::string message() const override
-  {
-    return std::format("error happened with exception '{}'", exc_->what());
-  }
-
-  [[nodiscard]] const std::shared_ptr<std::exception> &get_exception_ptr() const { return exc_; }
-
-private:
-  ///@brief Pointer to exception interface. Needs to be shared_ptr, since std::expected needs copyiability.
-  std::shared_ptr<std::exception> exc_;
 };
 
 }// namespace anywho

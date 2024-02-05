@@ -1,6 +1,7 @@
 #include <anywho/concepts.hpp>
 #include <anywho/direct_return.hpp>
 #include <anywho/error_factories.hpp>
+#include <anywho/error_from_exception.hpp>
 #include <anywho/errors.hpp>
 #include <anywho/with_context.hpp>
 #include <catch2/catch_test_macros.hpp>
@@ -12,7 +13,6 @@ namespace {
 std::expected<int, std::string> myfuncUnexpected() { return std::unexpected("my_msg"); }
 
 std::expected<int, std::string> myfuncValid() { return 3; }
-
 
 std::expected<int, std::string> myfunc0()
 {
@@ -60,14 +60,14 @@ std::error_code positiveOnlySquareWithErrorCode(int num, int &output)
   return std::make_error_code(std::errc::result_out_of_range);
 }
 
-int positiveOnlySquareWithException(int num)
-{
-  if (num < 0) {
-    throw std::runtime_error("is negative");
-  } else {
-    return num * num;
-  }
-}
+// int positiveOnlySquareWithException(int num)
+// {
+//   if (num < 0) {
+//     throw std::runtime_error("is negative");
+//   } else {
+//     return num * num;
+//   }
+// }
 }// namespace
 
 TEST_CASE("error get returned with anywho", "[direct_return]")
