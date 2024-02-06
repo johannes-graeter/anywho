@@ -185,7 +185,7 @@ jobs:
             gcc-13 g++-13 gdb libstdc++-13-dev
       - name: Install cmake
         run: |
-          wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null && \
+              wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null && \
               sudo apt-add-repository -y "deb https://apt.kitware.com/ubuntu/ jammy main" && \
               sudo apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
               sudo apt-get install -y --no-install-recommends cmake cmake-curses-gui
