@@ -1,7 +1,7 @@
 #include <anywho/concepts.hpp>
 #include <anywho/direct_return.hpp>
 #include <anywho/error_factories.hpp>
-#include <anywho/error_from_exception.hpp>
+// #include <anywho/error_from_exception.hpp>
 #include <anywho/errors.hpp>
 #include <anywho/with_context.hpp>
 #include <catch2/catch_test_macros.hpp>
@@ -172,7 +172,8 @@ TEST_CASE("test error from code factory, truth case", "[error_factories]")
 //   // https://github.com/llvm/llvm-project/issues/52771)
 //   {
 //     const std::expected<int, anywho::ErrorFromException> exp =
-//       anywho::make_error_from_throwable<int, std::runtime_error>([]() { return positiveOnlySquareWithException(-3); });
+//       anywho::make_error_from_throwable<int, std::runtime_error>([]() { return positiveOnlySquareWithException(-3);
+//       });
 //     REQUIRE(!exp.has_value());
 //   }
 
@@ -189,7 +190,8 @@ TEST_CASE("test error from code factory, truth case", "[error_factories]")
 // {
 //   {
 //     const std::expected<int, anywho::ErrorFromException> exp =
-//       anywho::make_error_from_throwable<int, std::runtime_error>([]() { return positiveOnlySquareWithException(3); });
+//       anywho::make_error_from_throwable<int, std::runtime_error>([]() { return positiveOnlySquareWithException(3);
+//       });
 //     REQUIRE(exp.has_value());
 //     REQUIRE(exp.value() == 9);
 //   }
