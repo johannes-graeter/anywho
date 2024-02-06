@@ -176,6 +176,13 @@ jobs:
             libc++-${{ env.CLANG_TIDY_VERSION}}-dev libc++abi-${{ env.CLANG_TIDY_VERSION}}-dev
           sudo apt-get clean
 
+      - name: Install gcc
+        run: |
+          sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
+          sudo apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
+          sudo apt-get install -y --no-install-recommends \
+            gcc-13 g++-13 gdb libstdc++-13-dev
+
       - name: Configure CMake
         run: |
           cmake -S . -B ./build -G "${{matrix.generator}}" -D${{ env.PROJECT_NAME }}_ENABLE_IPO=${{matrix.enable_ipo }} -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -D${{ env.PROJECT_NAME }}_PACKAGING_MAINTAINER_MODE:BOOL=${{matrix.packaging_maintainer_mode}} -D${{ env.PROJECT_NAME }}_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} -DGIT_SHA:STRING=${{ github.sha }}
