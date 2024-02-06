@@ -168,10 +168,12 @@ jobs:
 
       - name: Install libc++
         run: |
-          sudo apt-get update
+          sudo apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
           sudo apt-get install -y \
-            libc++-${{ env.CLANG_TIDY_VERSION}}-dev \
-            libc++abi-${{ env.CLANG_TIDY_VERSION}}-dev
+            clang-${{ env.CLANG_TIDY_VERSION}} llvm-${{ env.CLANG_TIDY_VERSION}}-dev \
+            lldb-${{ env.CLANG_TIDY_VERSION}} lld-${{ env.CLANG_TIDY_VERSION}} clangd-${{ env.CLANG_TIDY_VERSION}} \
+            libclang-${{ env.CLANG_TIDY_VERSION}}-dev clang-tidy-${{ env.CLANG_TIDY_VERSION}} clang-format-${{ env.CLANG_TIDY_VERSION}} \
+            libc++-${{ env.CLANG_TIDY_VERSION}}-dev libc++abi-${{ env.CLANG_TIDY_VERSION}}-dev
           sudo apt-get clean
 
       - name: Configure CMake
