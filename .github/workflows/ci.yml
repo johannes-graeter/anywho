@@ -54,9 +54,9 @@ jobs:
         include:
           # Add appropriate variables for gcov version required. This will intentionally break
           # if you try to use a compiler that does not have gcov set
-          # - compiler: gcc-13
-          #   gcov_executable: gcov
-          #   enable_ipo: On
+          - compiler: gcc-13
+            gcov_executable: gcov
+            enable_ipo: On
 
           - compiler: llvm-17
             enable_ipo: Off
