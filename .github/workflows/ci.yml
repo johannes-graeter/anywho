@@ -34,7 +34,7 @@ jobs:
           # - windows-2019
         compiler:
           - llvm-17
-          # - gcc-13
+          - gcc-13
         generator:
           - "Ninja Multi-Config"
         build_type:
@@ -54,9 +54,9 @@ jobs:
         include:
           # Add appropriate variables for gcov version required. This will intentionally break
           # if you try to use a compiler that does not have gcov set
-          # - compiler: gcc-13
-          #   gcov_executable: gcov
-          #   enable_ipo: On
+          - compiler: gcc-13
+            gcov_executable: gcov-13
+            enable_ipo: On
 
           - compiler: llvm-17
             enable_ipo: Off
@@ -70,7 +70,7 @@ jobs:
             packaging_maintainer_mode: OFF
             package_generator: TBZ2
 
-          # This exists solely to make sure a non-multiconfig build works
+          # # This exists solely to make sure a non-multiconfig build works
           # - os: ubuntu-22.04
           #   compiler: llvm-17
           #   generator: "Unix Makefiles"
@@ -168,11 +168,27 @@ jobs:
 
       - name: Install libc++
         run: |
-          sudo apt-get update
+          sudo apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
           sudo apt-get install -y \
-            libc++-${{ env.CLANG_TIDY_VERSION}}-dev \
-            libc++abi-${{ env.CLANG_TIDY_VERSION}}-dev
+            gnupg \
+            clang-${{ env.CLANG_TIDY_VERSION}} llvm-${{ env.CLANG_TIDY_VERSION}}-dev \
+            lldb-${{ env.CLANG_TIDY_VERSION}} lld-${{ env.CLANG_TIDY_VERSION}} clangd-${{ env.CLANG_TIDY_VERSION}} \
+            libclang-${{ env.CLANG_TIDY_VERSION}}-dev clang-tidy-${{ env.CLANG_TIDY_VERSION}} clang-format-${{ env.CLANG_TIDY_VERSION}} \
+            libc++-${{ env.CLANG_TIDY_VERSION}}-dev libc++abi-${{ env.CLANG_TIDY_VERSION}}-dev
           sudo apt-get clean
+
+      - name: Install gcc
+        run: |
+          sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
+          sudo apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
+          sudo apt-get install -y --no-install-recommends \
+            gcc-13 g++-13 gdb libstdc++-13-dev
+      - name: Install cmake
+        run: |
+              wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null && \
+              sudo apt-add-repository -y "deb https://apt.kitware.com/ubuntu/ jammy main" && \
+              sudo apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
+              sudo apt-get install -y --no-install-recommends cmake cmake-curses-gui
 
       - name: Configure CMake
         run: |

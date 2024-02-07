@@ -6,6 +6,7 @@ cmake_minimum_required(VERSION 3.27)
 
 # Only set the cxx_standard if it is not set by someone else
 set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # strongly encouraged to enable this globally to avoid conflicts between
 # -Wpedantic being enabled and -std=c++23 and -std=gnu++23 for example
@@ -28,9 +29,6 @@ message(WARNING ${CMAKE_CXX_COMPILER_ID})
 if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang.*")
   message(WARNING "CLANG with c++")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
-#elseif(cmake_cxx_compiler_id matches ".*gnu.*")
-#  message(WARNING "GCC with stdc++")
-#  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libstdc++")
 endif()
 
 anywho_setup_options()
@@ -76,7 +74,6 @@ endif()
 include(CTest)
 
 if(BUILD_TESTING)
-  message(AUTHOR_WARNING "Building Tests. Be sure to check out test/constexpr_tests.cpp for constexpr testing")
   add_subdirectory(test)
 endif()
 
