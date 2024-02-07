@@ -7,7 +7,7 @@
 ## About anywho
 Error management for c++23 just like rust anyhow
 
-## Why jet another error handling library
+## Why yet another error handling library
 Having dug into rust, I found error management with the anyhow library (https://docs.rs/anyhow/latest/anyhow/) very pleasing and the best I experienced so far.
 With c++23 std::expected we are headed into that direction but are not quite there yet.
 This repo adds an error type and some convenience functions to come closer to Rust anyhow.
