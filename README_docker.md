@@ -1,5 +1,9 @@
 ## Docker Instructions
 
+### Easy
+Use vscode with the devcontainer extension. It will automatically prompt on startup if you want to build the container and start the project there.
+
+### Custom
 If you have [Docker](https://www.docker.com/) installed, you can run this
 in your terminal, when the Dockerfile is inside the `.devcontainer` directory:
 
