@@ -5,6 +5,7 @@ on:
     types: [published]
   push:
     tags:
+      - v**
     branches:
       - main
       - develop
