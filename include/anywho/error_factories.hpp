@@ -8,6 +8,16 @@
 
 namespace anywho {
 
+/**
+ * @brief Factory function for functions using boolean success flags
+ *
+ * @tparam T Type of the expected value
+ * @tparam E Error type
+ * @param has_no_error Value of the boolean flag
+ * @param truth_value Expected value
+ * @param error Instance of the error that shall be returned
+ * @return std::expected<T, E>
+ */
 template<typename T, concepts::Error E>
 inline std::expected<T, E> make_error(bool has_no_error, T truth_value, E &&error)
 {
@@ -18,6 +28,15 @@ inline std::expected<T, E> make_error(bool has_no_error, T truth_value, E &&erro
   }
 }
 
+/**
+ * @brief Factory function for functions using boolean success flags
+ *
+ * @tparam T Type of the expected value
+ * @tparam E Error type
+ * @param callable Callable in which the function that shall be evaluated is wrapped
+ * @param error Instance of the error that shall be returned
+ * @return std::expected<T, E>
+ */
 template<typename T, concepts::Error E>
 inline std::expected<T, E> make_error(std::function<std::tuple<bool, T>(void)> callable, E &&error)
 {
@@ -26,6 +45,14 @@ inline std::expected<T, E> make_error(std::function<std::tuple<bool, T>(void)> c
   return make_error(has_no_error, truth_value, std::move(error));
 }
 
+/**
+ * @brief Factory function for functions using std::error_code
+ *
+ * @tparam T Type of the expected value
+ * @param error_code Error code that was returned by the function to be evaluated
+ * @param truth_value Expected value
+ * @return std::expected<T, E>
+ */
 template<typename T> inline std::expected<T, ErrorFromCode> make_error(std::error_code error_code, T truth_value)
 {
   if (!error_code) {
@@ -35,6 +62,14 @@ template<typename T> inline std::expected<T, ErrorFromCode> make_error(std::erro
   }
 }
 
+/**
+ * @brief Factory function for functions using std::error_code
+ *
+ * @tparam T Type of the expected value
+ * @param callable Callable in which the function that shall be evaluated is wrapped
+ * @param truth_value Expected value
+ * @return std::expected<T, E>
+ */
 template<typename T>
 inline std::expected<T, ErrorFromCode> make_error(std::function<std::tuple<std::error_code, T>(void)> callable)
 {

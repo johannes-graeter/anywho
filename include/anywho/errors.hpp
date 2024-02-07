@@ -8,6 +8,11 @@
 
 namespace anywho {
 
+/**
+ * @brief Most basic form of an error. Use it directly or inherit from it to specialize your errors.
+ *        Uses dynamic memory allocation.
+ *
+ */
 class GenericError
 {
 public:
@@ -31,15 +36,23 @@ public:
 
   void consume_context(anywho::Context &&context) { contexts_.emplace_back(std::move(context)); }
   [[nodiscard]] virtual constexpr std::string message() const { return "generic error happened"; }
-  [[nodiscard]] size_t id() const { return std::hash<std::string>{}(message()); }
+  [[nodiscard]] virtual size_t id() const { return std::hash<std::string>{}(message()); }
 
 protected:
   std::vector<Context> contexts_{};
 };
 
-template<uint Size> class FixedSizeError final
+/**
+ * @brief Error without dynamic memory allocation. Can be used as a base for custom errors.
+ *        Context that is longer than the specified size will be ommitted.
+ *
+ * @tparam Size Maximum size of the resulting error message
+ */
+template<uint Size> class FixedSizeError
 {
 public:
+  virtual ~FixedSizeError() = default;
+
   [[nodiscard]] std::string format() const { return message() + static_cast<std::string>(message_); }
 
   void consume_context(anywho::Context &&context)
@@ -47,13 +60,17 @@ public:
     message_ = std::format("{}::{}", static_cast<std::string>(message_), context.format());
   }
 
-  [[nodiscard]] static std::string message() { return "fixed size error happened"; }
-  [[nodiscard]] static size_t id() { return std::hash<std::string>{}(message()); }
+  [[nodiscard]] virtual constexpr std::string message() const { return "fixed size error happened"; }
+  [[nodiscard]] virtual size_t id() const { return std::hash<std::string>{}(message()); }
 
 private:
   FixedString<Size> message_{};
 };
 
+/**
+ * @brief Error class that is used for functions that return std::error_code
+ *
+ */
 class ErrorFromCode final : public GenericError
 {
 public:

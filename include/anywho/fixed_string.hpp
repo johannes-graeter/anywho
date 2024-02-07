@@ -6,6 +6,11 @@
 
 namespace anywho {
 
+/**
+ * @brief FixedString without dynamic memory allocation
+ *
+ * @tparam N Maximum length of the string
+ */
 template<size_t N> class FixedString final
 {
 private:

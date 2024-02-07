@@ -6,7 +6,13 @@
 #include "fixed_string.hpp"
 
 namespace anywho {
-struct Context
+/**
+ * @brief The context that is given as additional information when handing over errors between functions.
+ *        Nice to use with designated inititializers like
+ *        auto x = ANYWHO(myFunc(input).with_context({.message="you may not pass!", .file=__FILE__, .line=__LINE__}));
+ *
+ */
+struct Context final
 {
   FixedString<128> message;
   uint line;
