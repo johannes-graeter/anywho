@@ -12,7 +12,7 @@
 			"VARIANT": "jammy",
 			"GCC_VER": "13",
 			"LLVM_VER": "17",
-			"USE_CLANG": ""
+			"USE_CLANG": "1"
 		}
 	},
 	"runArgs": [
