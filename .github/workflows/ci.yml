@@ -15,6 +15,9 @@ env:
   VERBOSE: 1
   ASAN_OPTIONS: "alloc_dealloc_mismatch=0"
 
+permissions:
+  contents: write
+
 jobs:
   Test:
     runs-on: ${{ matrix.os }}
