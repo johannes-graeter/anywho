@@ -139,6 +139,19 @@ TEST_CASE("test truth/false error factor, false case", "[error_factories]")
   REQUIRE(!exp.has_value());
 }
 
+TEST_CASE("test truth/false error factor with function, false case", "[error_factories]")
+{
+  // Somehow template argument deduction does not work here, so we need to give it by hand.
+  const std::expected<int, anywho::GenericError> exp = anywho::make_error<int, anywho::GenericError>(
+    []() {
+      int output = 0;
+      bool ret = positiveOnlySquare(-3, output);
+      return std::make_tuple(ret, output);
+    },
+    anywho::GenericError{});
+  REQUIRE(!exp.has_value());
+}
+
 TEST_CASE("test truth/false error factor, truth case", "[error_factories]")
 {
   int output = 0;
@@ -148,6 +161,20 @@ TEST_CASE("test truth/false error factor, truth case", "[error_factories]")
   // anywho::GenericError{});
   bool ret = positiveOnlySquare(3, output);
   const std::expected<int, anywho::GenericError> exp = anywho::make_error(ret, output, anywho::GenericError{});
+  REQUIRE(exp.has_value());
+  REQUIRE(exp.value() == 9);
+}
+
+TEST_CASE("test truth/false error factor with function, truth case", "[error_factories]")
+{
+  // Somehow template argument deduction does not work here, so we need to give it by hand.
+  const std::expected<int, anywho::GenericError> exp = anywho::make_error<int, anywho::GenericError>(
+    []() {
+      int output = 0;
+      bool ret = positiveOnlySquare(3, output);
+      return std::make_tuple(ret, output);
+    },
+    anywho::GenericError{});
   REQUIRE(exp.has_value());
   REQUIRE(exp.value() == 9);
 }
@@ -166,6 +193,30 @@ TEST_CASE("test error from code factory, truth case", "[error_factories]")
   int output = 0;
   auto ret = positiveOnlySquareWithErrorCode(3, output);
   std::expected<int, anywho::ErrorFromCode> exp = anywho::make_error(ret, output);
+  REQUIRE(exp.has_value());
+  REQUIRE(exp.value() == 9);
+}
+
+TEST_CASE("test error from code factory with function, false case", "[error_factories]")
+{
+  // Somehow template argument deduction does not work here, so we need to give it by hand.
+  std::expected<int, anywho::ErrorFromCode> exp = anywho::make_error<int>([]() {
+    int output = 0;
+    auto ret = positiveOnlySquareWithErrorCode(-3, output);
+    return std::make_tuple(ret, output);
+  });
+  REQUIRE(!exp.has_value());
+  REQUIRE(exp.error().get_code() == std::errc::result_out_of_range);
+}
+
+TEST_CASE("test error from code factory with function, truth case", "[error_factories]")
+{
+  // Somehow template argument deduction does not work here, so we need to give it by hand.
+  std::expected<int, anywho::ErrorFromCode> exp = anywho::make_error<int>([]() {
+    int output = 0;
+    auto ret = positiveOnlySquareWithErrorCode(3, output);
+    return std::make_tuple(ret, output);
+  });
   REQUIRE(exp.has_value());
   REQUIRE(exp.value() == 9);
 }
