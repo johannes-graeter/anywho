@@ -14,6 +14,7 @@ This repo adds an error type and convenience functions to make it easier working
 This project is meant to be for std::expected, what Rust's anyhow is to Result<>.
 
 ## Design goals
+* no dependencies outside of stdlibc++
 * zero overhead compared to using std::expected
 * errors are redirected in 90 percent of the cases. This must hence be very lean (max. 1 line of code to add information to the error)
 * transition from other error handling strategies to std::expected must be smooth.
@@ -21,6 +22,16 @@ This project is meant to be for std::expected, what Rust's anyhow is to Result<>
 More details in [here](design.md)
 
 ## Short introduction
+To add this to your project
+```cpp
+#include <anywho/anywho.hpp>
+
+// In order to compile this you need to set ASAN_OPTIONS=alloc_dealloc_mismatch=0
+// Caused by a bug in libc++-17
+#include <anywho/extra.hpp>
+```
+
+Use it like
 
 ```cpp
 // With a function defined like
