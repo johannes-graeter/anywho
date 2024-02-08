@@ -34,7 +34,7 @@ target_link_libraries(
   tests
   PRIVATE anywho::anywho_warnings
           anywho::anywho_options
-          anywho::error
+          anywho::core
           Catch2::Catch2WithMain
           )
 
@@ -67,7 +67,7 @@ catch_discover_tests(
 #   constexpr_tests
 #   PRIVATE anywho::anywho_warnings
 #           anywho::anywho_options
-#           # anywho::error
+#           # anywho
 #           Catch2::Catch2WithMain
 #           )
 
@@ -91,7 +91,7 @@ catch_discover_tests(
 #   relaxed_constexpr_tests
 #   PRIVATE anywho::anywho_warnings
 #           anywho::anywho_options
-#           # anywho::error
+#           # anywho
 #           Catch2::Catch2WithMain
 #           )
 # target_compile_definitions(relaxed_constexpr_tests PRIVATE -DCATCH_CONFIG_RUNTIME_STATIC_REQUIRE)

@@ -12,17 +12,16 @@ namespace concepts {
    * @tparam T
    */
   template<typename T>
-  concept Error = requires(T &obj, Context c)
-  {
+  concept Error = requires(T &obj, Context c) {
     {
       obj.format()
-      } -> std::convertible_to<std::string>;
+    } -> std::convertible_to<std::string>;
     {
       obj.message()
-      } -> std::convertible_to<std::string>;
+    } -> std::convertible_to<std::string>;
     {
       obj.id()
-      } -> std::unsigned_integral;
+    } -> std::unsigned_integral;
     obj.consume_context(std::move(c));
   };
 
@@ -32,11 +31,10 @@ namespace concepts {
    * @tparam T
    */
   template<typename T>
-  concept Catchable = requires(T &obj)
-  {
+  concept Catchable = requires(T &obj) {
     {
       obj.what()
-      } -> std::convertible_to<std::string>;
+    } -> std::convertible_to<std::string>;
   };
 }// namespace concepts
 }// namespace anywho
