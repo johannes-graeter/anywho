@@ -1,7 +1,7 @@
-PROJECT_NAME My_C++_Project
+PROJECT_NAME Anywho
 
 # Input directories
-INPUT = ../include ../src include src
+INPUT = ../include ../src include src ../README.md README.md
 
 # Exclude certain files/directories
 EXCLUDE = ''
@@ -32,6 +32,8 @@ GENERATE_INDEX = YES
 
 # Highlight code using a lexer (e.g., cpp)
 USE_CLANG_STYLE_HIGHLIGHTING = YES
+
+USE_MDFILE_AS_MAINPAGE = ../README.md README.md
 
 # Customize HTML templates (optional)
 # TEMPLATE_RELATIVIZE_LINKS = YES
