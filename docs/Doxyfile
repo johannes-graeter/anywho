@@ -1,7 +1,7 @@
-PROJECT_NAME Anywho
+PROJECT_NAME = "Anywho"
 
 # Input directories
-INPUT = ../include ../src ../README.md ../README_building.md ../README_dependencies.md ../README_docker.md
+INPUT = ../include ../src ../*.md ../README_building.md ../README_dependencies.md ../README_docker.md ../README_troubleshooting.md
 
 # Exclude certain files/directories
 EXCLUDE = ''
@@ -33,7 +33,8 @@ GENERATE_INDEX = YES
 # Highlight code using a lexer (e.g., cpp)
 USE_CLANG_STYLE_HIGHLIGHTING = YES
 
-USE_MDFILE_AS_MAINPAGE = ../README.md README.md
+MARKDOWN_SUPPORT       = YES
+USE_MDFILE_AS_MAINPAGE = ../README.md
 
 # Customize HTML templates (optional)
 # TEMPLATE_RELATIVIZE_LINKS = YES
