@@ -7,6 +7,9 @@
 ## About anywho
 Error management for c++23 just like rust anyhow.
 
+## Docs
+[README with code documentation](https://johannes-graeter.github.io/anywho/index.html)
+
 ## Why yet another error handling library
 Having dug into rust, I found error management with the anyhow library (https://docs.rs/anyhow/latest/anyhow/) very pleasing and the best I experienced so far.
 With c++23's std::expected we are headed in a good direction but we need some syntactic sugar around it.
@@ -134,4 +137,3 @@ Note that caused by a bug in libc++ (as of 2024/02/07) you must set ASAN_OPTIONS
  * [Building Details](README_building.md)
  * [Troubleshooting](README_troubleshooting.md)
  * [Docker](README_docker.md)
- * [Code Docs](https://johannes-graeter.github.io/anywho/index.html)
