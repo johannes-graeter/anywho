@@ -232,7 +232,6 @@ jobs:
           files: |
             build/*-*${{ matrix.build_type }}*-*.*
 
-
       - name: Publish to codecov
         uses: codecov/codecov-action@v2
         with:
