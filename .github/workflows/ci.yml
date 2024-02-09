@@ -212,7 +212,6 @@ jobs:
           ctest -C ${{matrix.build_type}} --output-on-failure
           gcovr -j ${{env.nproc}} --delete --root ../ --print-summary --xml-pretty --xml coverage.xml . --gcov-executable '${{ matrix.gcov_executable }}'
 
-      #set ASAN_OPTIONS=alloc_dealloc_mismatch=0
       - name: Windows - Test and coverage
         if: runner.os == 'Windows'
         working-directory: ./build
