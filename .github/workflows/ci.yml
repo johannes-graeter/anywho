@@ -231,7 +231,21 @@ jobs:
         with:
           files: |
             build/*-*${{ matrix.build_type }}*-*.*
+      
+      - name: Build Doxygen Documentation
+        uses: mattnotmitt/doxygen-action@v1.9.4
+        # if: github.ref == 'refs/heads/main'
+        with:
+              working-directory: ./
+              doxyfile-path: ./docs/Doxyfile
+              enable-latex: false
 
+      - name: Deploy Documentation
+        uses: peaceiris/actions-gh-pages@v3
+        # if: github.ref == 'refs/heads/main'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/html
 
       - name: Publish to codecov
         uses: codecov/codecov-action@v2
