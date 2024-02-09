@@ -35,8 +35,8 @@ jobs:
       - name: Build Doxygen Documentation
         uses: mattnotmitt/doxygen-action@v1.9.5
         with:
-              working-directory: './'
-              doxyfile-path: 'docs/Doxyfile'
+              working-directory: './docs'
+              doxyfile-path: './Doxyfile'
       - name: test docs
         run: |
           ls docs/html
