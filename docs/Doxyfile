@@ -1,7 +1,7 @@
 PROJECT_NAME Anywho
 
 # Input directories
-INPUT = ../include ../src include src ../README.md README.md
+INPUT = ../include ../src ../README.md ../README_building.md ../README_dependencies.md ../README_docker.md
 
 # Exclude certain files/directories
 EXCLUDE = ''
