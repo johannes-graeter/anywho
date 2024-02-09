@@ -1,7 +1,7 @@
 PROJECT_NAME My_C++_Project
 
 # Input directories
-INPUT = ../include
+INPUT = ../include ../src include src
 
 # Exclude certain files/directories
 EXCLUDE = ''
