@@ -37,6 +37,10 @@ jobs:
         with:
               working-directory: './'
               doxyfile-path: 'docs/Doxyfile'
+      - name: test docs
+        run: |
+          ls docs/html
+          ls -lah docs/html
 
       # - name: Deploy Documentation
       #   uses: peaceiris/actions-gh-pages@v3
