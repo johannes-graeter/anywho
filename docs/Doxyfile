@@ -1,0 +1,38 @@
+PROJECT_NAME My_C++_Project
+
+# Input directories
+INPUT = ../include
+
+# Exclude certain files/directories
+EXCLUDE = ''
+
+# Recursively search for source files
+RECURSIVE = YES
+
+# Enable brief description by default
+GENERATE_BRIEF_DESCRIPTION = YES
+
+# Enable detailed descriptions (optional)
+GENERATE_DETAILED_DESCRIPTION = YES
+
+# Enable member descriptions (optional)
+GENERATE_MEMBER_DESCRIPTION = YES
+
+# Output format (HTML is common)
+OUTPUT_FORMAT = html
+
+# Output directory
+OUTPUT_DIRECTORY = html
+
+# Generate navigation tree
+GENERATE_TREEVIEW = YES
+
+# Generate index with all symbols
+GENERATE_INDEX = YES
+
+# Highlight code using a lexer (e.g., cpp)
+USE_CLANG_STYLE_HIGHLIGHTING = YES
+
+# Customize HTML templates (optional)
+# TEMPLATE_RELATIVIZE_LINKS = YES
+# TEMPLATE_FILES = my_templates
