@@ -37,21 +37,23 @@ jobs:
         with:
               working-directory: './docs'
               doxyfile-path: './Doxyfile'
-      - name: test docs
-        run: |
-          ls docs/html
-          ls -lah docs/html
+      
+      - name: Install sphinx
+        working-directory: './docs'
+        run : |
+          sudo apt-get update
+          sudo apt-get install -y python3 python3-pip
+          pip3 install -r requirements.txt
 
-      # - name: Deploy Documentation
-      #   uses: peaceiris/actions-gh-pages@v3
-      #   if: github.ref == 'refs/heads/main'
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     publish_dir: ./docs/html
+      - name: Build sphinx
+        working-directory: './docs'
+        run : |
+          make html
+      
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
-          source: ./docs/html/html
+          source: ./docs/_build/html
           destination: ./_site
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
