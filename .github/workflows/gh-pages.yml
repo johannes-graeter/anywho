@@ -33,7 +33,7 @@ jobs:
         uses: actions/configure-pages@v4
 
       - name: Build Doxygen Documentation
-        uses: mattnotmitt/doxygen-action@v1.9.5
+        uses: mattnotmitt/doxygen-action@v1.9.8
         with:
               working-directory: './docs'
               doxyfile-path: './Doxyfile.in'
@@ -55,6 +55,7 @@ jobs:
         with:
           source: ./docs/_build/html
           destination: ./_site
+      
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
 

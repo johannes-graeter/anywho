@@ -68,13 +68,13 @@ html_static_path = ['_static']
 html_baseurl = 'base'
 
 breathe_projects = {
-	"Anywho": "_build/xml/"
+	"Anywho": "_build/html/doxygen/xml/"
 }
 
 breathe_projects_source = {
-    "Anywho" : ( "../include/", [x for x in glob.glob("../include")])
+    "Anywho" : ( "../include/", [x for x in glob.glob("../include/*.hpp") ])
 }
 breathe_default_project = "Anywho"
-breathe_default_members = ('members', 'undoc-members')
+#breathe_default_members = ('members', 'undoc-members')
 
 
