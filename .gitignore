@@ -5,6 +5,7 @@ cmake-build-*/
 conan-cache/
 Testing/
 docs/_build/*
+docs/_build_doxygen/*
 
 # User spesific settings
 CMakeUserPresets.json

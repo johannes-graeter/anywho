@@ -131,6 +131,18 @@ Note that caused by a bug in libc++ (as of 2024/02/07) you must set ASAN_OPTIONS
 * Ubuntu 22.04: Clang-17
 * Ubuntu 22.04: gcc-13
 
+
+## Build docs
+We have experimental ReadTheDocs style docs to build (Doxygen >=1.9.8 is recommended and must be preinstalled)
+```bash
+pushd docs
+pip3 install -r requirements.txt
+doxygen Doxyfile.in
+make html
+popd
+```
+open `docs/_build/html/index.html` in your browser.
+
 ## More Details
 
  * [Dependency Setup](README_dependencies.md)
