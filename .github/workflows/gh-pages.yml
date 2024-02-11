@@ -33,27 +33,27 @@ jobs:
         uses: actions/configure-pages@v4
 
       - name: Build Doxygen Documentation
-        uses: mattnotmitt/doxygen-action@v1.9.8
+        uses: mattnotmitt/doxygen-action
         with:
               working-directory: './docs'
               doxyfile-path: './Doxyfile.in'
       
-      - name: Install sphinx
-        working-directory: './docs'
-        run : |
-          sudo apt-get update
-          sudo apt-get install -y python3 python3-pip
-          pip3 install -r requirements.txt
+      # - name: Install sphinx
+      #   working-directory: './docs'
+      #   run : |
+      #     sudo apt-get update
+      #     sudo apt-get install -y python3 python3-pip
+      #     pip3 install -r requirements.txt
 
-      - name: Build sphinx
-        working-directory: './docs'
-        run : |
-          make html
+      # - name: Build sphinx
+      #   working-directory: './docs'
+      #   run : |
+      #     make html
       
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
-          source: ./docs/_build/html
+          source: ./docs/_build_doxygen/html
           destination: ./_site
       
       - name: Upload artifact

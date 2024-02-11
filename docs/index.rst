@@ -29,6 +29,6 @@ Anywho
 Classic Doxygen Documentation
 =============================
 
-`classic <doxygen/html/index.html>`_
+`classic <../../_build_doxygen/html/index.html>`_
 
 

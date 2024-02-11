@@ -24,7 +24,7 @@ GENERATE_MEMBER_DESCRIPTION = YES
 OUTPUT_FORMAT = html
 
 # Output directory
-OUTPUT_DIRECTORY = "_build/html/doxygen"
+OUTPUT_DIRECTORY = "_build_doxygen"
 
 # Generate navigation tree
 GENERATE_TREEVIEW = YES

@@ -68,7 +68,7 @@ html_static_path = ['_static']
 html_baseurl = 'base'
 
 breathe_projects = {
-	"Anywho": "_build/html/doxygen/xml/"
+	"Anywho": "_build_doxygen/xml/"
 }
 
 breathe_projects_source = {
