@@ -38,8 +38,8 @@ RUN add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
         gcc-${GCC_VER} g++-${GCC_VER} gdb libstdc++-${GCC_VER}-dev
 
 # Set gcc-${GCC_VER} as default gcc
-RUN update-alternatives --install /usr/bin/gcc gcc $(which gcc-${GCC_VER}) 100
-RUN update-alternatives --install /usr/bin/g++ g++ $(which g++-${GCC_VER}) 100
+RUN update-alternatives --install /usr/bin/gcc gcc $(which gcc-${GCC_VER}) 100 \
+    && update-alternatives --install /usr/bin/g++ g++ $(which g++-${GCC_VER}) 100
 
 ARG LLVM_VER="17"
 # Add clang-${LLVM_VER}
@@ -55,13 +55,12 @@ RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - 2>/dev/
         libc++-${LLVM_VER}-dev libc++abi-${LLVM_VER}-dev
 
 # Set the default clang-tidy, so CMake can find it
-RUN update-alternatives --install /usr/bin/clang-tidy clang-tidy $(which clang-tidy-${LLVM_VER}) 1
+RUN update-alternatives --install /usr/bin/clang-tidy clang-tidy $(which clang-tidy-${LLVM_VER}) 1 \
 # Set the default clang-format, so CMake can find it
-RUN update-alternatives --install /usr/bin/clang-format clang-format $(which clang-format-${LLVM_VER}) 1
-
+    && update-alternatives --install /usr/bin/clang-format clang-format $(which clang-format-${LLVM_VER}) 1 \
 # Set clang-${LLVM_VER} as default clang
-RUN update-alternatives --install /usr/bin/clang clang $(which clang-${LLVM_VER}) 100
-RUN update-alternatives --install /usr/bin/clang++ clang++ $(which clang++-${LLVM_VER}) 100
+    && update-alternatives --install /usr/bin/clang clang $(which clang-${LLVM_VER}) 100 \
+    && update-alternatives --install /usr/bin/clang++ clang++ $(which clang++-${LLVM_VER}) 100
 
 # Add current cmake/ccmake, from Kitware
 ARG CMAKE_URL="https://apt.kitware.com/ubuntu/"
