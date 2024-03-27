@@ -35,7 +35,6 @@ jobs:
         os:
           - ubuntu-22.04
           - ubuntu-20.04
-          - ubuntu-24.04
           # - macos-10.15
           # - windows-2019
         compiler:
@@ -131,6 +130,18 @@ jobs:
 
 
     steps:
+      - name: Set up Ubuntu version codename
+        id: set-codename
+        run: |
+          if [ "${{ matrix.os }}" == "ubuntu-20.04" ]; then
+            echo "::set-output name=ubuntu-codename::focal"
+          elif [ "${{ matrix.os }}" == "ubuntu-22.04" ]; then
+            echo "::set-output name=ubuntu-codename::jammy"
+          else
+            echo "::error ::Unsupported Ubuntu version"
+            exit 1
+          fi
+
       - name: Check for llvm version mismatches
         if: ${{ contains(matrix.compiler, 'llvm') && !contains(matrix.compiler, env.CLANG_TIDY_VERSION) }}
         uses: actions/github-script@v3
@@ -189,10 +200,11 @@ jobs:
           sudo apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
           sudo apt-get install -y --no-install-recommends \
             gcc-13 g++-13 gdb libstdc++-13-dev
+
       - name: Install cmake
         run: |
               wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null && \
-              sudo apt-add-repository -y "deb https://apt.kitware.com/ubuntu/ jammy main" && \
+              sudo apt-add-repository -y "deb https://apt.kitware.com/ubuntu/ ${{ steps.set-codename.outputs.ubuntu-codename }} main" && \
               sudo apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
               sudo apt-get install -y --no-install-recommends cmake cmake-curses-gui
 
