@@ -243,7 +243,7 @@ jobs:
         if: ${{ startsWith(github.ref, 'refs/tags/') && matrix.package_generator != '' }}
         with:
           files: |
-            build/*-*${{ matrix.build_type }}*-*.*
+            build/*-*${{ matrix.os }}*-*${{ matrix.build_type }}*-*.*
 
       - name: Publish to codecov
         uses: codecov/codecov-action@v2
