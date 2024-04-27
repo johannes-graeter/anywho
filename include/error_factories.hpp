@@ -46,6 +46,40 @@ inline std::expected<T, E> make_error(std::function<std::tuple<bool, T>(void)> c
 }
 
 /**
+ * @brief Factory function for functions std::optional<Error>
+ *
+ * @tparam T Type of the expected value
+ * @tparam E Error type
+ * @param error optional error, having error or not
+ * @param truth_value Expected value
+ * @return std::expected<T, E>
+ */
+template<typename T, concepts::Error E> inline std::expected<T, E> make_error(std::optional<E> &&error, T truth_value)
+{
+  if (!has_error(error)) {
+    return std::expected<T, E>{ truth_value };
+  } else {
+    return std::unexpected(error.value());
+  }
+}
+
+/**
+ * @brief Factory function for functions std::optional<Error>
+ *
+ * @tparam T Type of the expected value
+ * @tparam E Error type
+ * @param callable Callable in which the function that shall be evaluated is wrapped
+ * @return std::expected<T, E>
+ */
+template<typename T, concepts::Error E>
+inline std::expected<T, E> make_error(std::function<std::tuple<std::optional<E>, T>(void)> callable)
+{
+  auto [error, truth_value] = callable();
+
+  return make_error(std::move(error), truth_value);
+}
+
+/**
  * @brief Factory function for functions using std::error_code
  *
  * @tparam T Type of the expected value

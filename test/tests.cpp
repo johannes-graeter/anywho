@@ -32,6 +32,8 @@ struct DummyError final
   anywho::Context abc_;
 };
 
+// std::optional<DummyError> myfuncOptError() { return std::make_optional(DummyError{}); }
+
 std::expected<int, DummyError> testError() { return std::unexpected(DummyError{}); }
 
 bool positiveOnlySquare(int num, int &output)
@@ -64,6 +66,18 @@ int positiveOnlySquareWithException(int num)
     return num * num;
   }
 }
+
+std::optional<DummyError> positiveOnlySquareWithOptional(int num, int &output)
+{
+  if (num > 0) {
+    output = num * num;
+
+    return std::nullopt;
+  }
+
+  return DummyError{};
+}
+
 }// namespace
 
 TEST_CASE("error get returned with anywho", "[direct_return]")
@@ -252,4 +266,46 @@ TEST_CASE("test error from throwable factory, truth case", "[error_factories]")
     REQUIRE(exp.has_value());
     REQUIRE(exp.value() == 9);
   }
+}
+
+TEST_CASE("test optional<Error> factory, truth case", "[error_factories]")
+{
+  int output = 0;
+  auto ret = positiveOnlySquareWithOptional(3, output);
+  REQUIRE(!anywho::has_error(ret));
+  std::expected<int, DummyError> exp = anywho::make_error(std::move(ret), output);
+  REQUIRE(exp.has_value());
+  REQUIRE(exp.value() == 9);
+}
+
+TEST_CASE("test optional<Error> factory, error case", "[error_factories]")
+{
+  int output = 0;
+  auto ret = positiveOnlySquareWithOptional(-3, output);
+  std::expected<int, DummyError> exp = anywho::make_error(std::move(ret), output);
+  REQUIRE(!exp.has_value());
+}
+
+
+TEST_CASE("test optional<Error> factory with function, truth case", "[error_factories]")
+{
+  // Somehow template argument deduction does not work here, so we need to give it by hand.
+  std::expected<int, DummyError> exp = anywho::make_error<int, DummyError>([]() {
+    int output = 0;
+    auto ret = positiveOnlySquareWithOptional(3, output);
+    return std::make_tuple(ret, output);
+  });
+  REQUIRE(exp.has_value());
+  REQUIRE(exp.value() == 9);
+}
+
+TEST_CASE("test optional<Error> factory with function, error case", "[error_factories]")
+{
+  // Somehow template argument deduction does not work here, so we need to give it by hand.
+  std::expected<int, DummyError> exp = anywho::make_error<int, DummyError>([]() {
+    int output = 0;
+    auto ret = positiveOnlySquareWithOptional(-3, output);
+    return std::make_tuple(ret, output);
+  });
+  REQUIRE(!exp.has_value());
 }
