@@ -6,21 +6,23 @@
 #include <type_traits>
 
 namespace {
-std::expected<int, std::string> myfuncUnexpected() { return std::unexpected("my_msg"); }
+namespace direct_return_expected {
+  std::expected<int, std::string> myfuncUnexpected() { return std::unexpected("my_msg"); }
 
-std::expected<int, std::string> myfuncValid() { return 3; }
+  std::expected<int, std::string> myfuncValid() { return 3; }
 
-std::expected<int, std::string> myfunc0()
-{
-  const int val = ANYWHO(myfuncUnexpected());
-  return 3 * val;
-}
+  std::expected<int, std::string> myfunc0()
+  {
+    const int val = ANYWHO(myfuncUnexpected());
+    return 3 * val;
+  }
 
-std::expected<int, std::string> myfunc1()
-{
-  const int val = ANYWHO(myfuncValid());
-  return 3 * val;
-}
+  std::expected<int, std::string> myfunc1()
+  {
+    const int val = ANYWHO(myfuncValid());
+    return 3 * val;
+  }
+}// namespace direct_return_expected
 
 struct DummyError final
 {
@@ -32,8 +34,39 @@ struct DummyError final
   anywho::Context abc_;
 };
 
-// std::optional<DummyError> myfuncOptError() { return std::make_optional(DummyError{}); }
+namespace direct_return_optional {
+  std::expected<int, DummyError> myfuncUnexpected() { return std::unexpected(DummyError{}); }
 
+  std::expected<int, DummyError> myfuncValid() { return 3; }
+
+  // std::optional<DummyError> myfuncOptError(int &output)
+  // {
+  //   output = 3;
+  //   return std::make_optional(DummyError{});
+  // }
+
+  // std::optional<DummyError> myfuncOptValid(int &output)
+  // {
+  //   output = 3;
+  //   return std::nullopt;
+  // }
+
+  std::optional<DummyError> myfunc0(int &val)
+  {
+    int val_cur = ANYWHO_OPT(myfuncUnexpected());
+    val = 3 * val_cur;
+
+    return std::nullopt;
+  }
+
+  std::optional<DummyError> myfunc1(int &val)
+  {
+    int val_cur = ANYWHO_OPT(myfuncValid());
+    val = 3 * val_cur;
+
+    return std::nullopt;
+  }
+}// namespace direct_return_optional
 std::expected<int, DummyError> testError() { return std::unexpected(DummyError{}); }
 
 bool positiveOnlySquare(int num, int &output)
@@ -82,15 +115,29 @@ std::optional<DummyError> positiveOnlySquareWithOptional(int num, int &output)
 
 TEST_CASE("error get returned with anywho", "[direct_return]")
 {
-  auto result = myfunc0();
+  auto result = direct_return_expected::myfunc0();
   REQUIRE(!result.has_value());
   REQUIRE(result.error() == "my_msg");
 }
 TEST_CASE("value get returned with anywho", "[direct_return]")
 {
-  auto result = myfunc1();
+  auto result = direct_return_expected::myfunc1();
   REQUIRE(result.has_value());
   REQUIRE(result.value() == 9);
+}
+
+TEST_CASE("error get returned with anywho_opt", "[direct_return]")
+{
+  int val = 0;
+  std::optional<DummyError> result = direct_return_optional::myfunc0(val);
+  REQUIRE(anywho::has_error(result));
+}
+TEST_CASE("value get returned with anywho_opt", "[direct_return]")
+{
+  int val = 0;
+  std::optional<DummyError> result = direct_return_optional::myfunc1(val);
+  REQUIRE(!anywho::has_error(result));
+  REQUIRE(val == 9);
 }
 
 TEST_CASE("fixed string", "[FixedString]")

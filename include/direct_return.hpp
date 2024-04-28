@@ -29,7 +29,6 @@
 #endif// c++23 guard
 /**
  * @brief Same as ANYWHO but for std::optional<Error>. For projects that are bound to version before cpp23.
- *        Attention: optEror.has_value() means it has an error which is unintuitive.
  *
  */
 #define ANYWHO_LEGACY(expr)                                                       \
