@@ -57,7 +57,7 @@ public:
 
   void consume_context(anywho::Context &&context)
   {
-    message_ = std::format("{}::{}", static_cast<std::string>(message_), context.format());
+    message_ = format_ns::format("{}::{}", static_cast<std::string>(message_), context.format());
   }
 
   [[nodiscard]] virtual constexpr std::string message() const { return "fixed size error happened"; }
@@ -78,7 +78,7 @@ public:
   ErrorFromCode(std::error_code &&code) : code_{ std::move(code) } {}
   [[nodiscard]] constexpr std::string message() const override
   {
-    return std::format("error happened with code {} and message {}", code_.value(), code_.message());
+    return format_ns::format("error happened with code {} and message {}", code_.value(), code_.message());
   }
 
   [[nodiscard]] const std::error_code &get_code() const { return code_; }

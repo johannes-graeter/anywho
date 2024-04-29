@@ -6,21 +6,23 @@
 #include <type_traits>
 
 namespace {
-std::expected<int, std::string> myfuncUnexpected() { return std::unexpected("my_msg"); }
+namespace direct_return_expected {
+  std::expected<int, std::string> myfuncUnexpected() { return std::unexpected("my_msg"); }
 
-std::expected<int, std::string> myfuncValid() { return 3; }
+  std::expected<int, std::string> myfuncValid() { return 3; }
 
-std::expected<int, std::string> myfunc0()
-{
-  const int val = ANYWHO(myfuncUnexpected());
-  return 3 * val;
-}
+  std::expected<int, std::string> myfuncUnexpectedRaised()
+  {
+    const int val = ANYWHO(myfuncUnexpected());
+    return 3 * val;
+  }
 
-std::expected<int, std::string> myfunc1()
-{
-  const int val = ANYWHO(myfuncValid());
-  return 3 * val;
-}
+  std::expected<int, std::string> myfuncValidRaised()
+  {
+    const int val = ANYWHO(myfuncValid());
+    return 3 * val;
+  }
+}// namespace direct_return_expected
 
 struct DummyError final
 {
@@ -32,6 +34,43 @@ struct DummyError final
   anywho::Context abc_;
 };
 
+namespace direct_return_optional {
+  std::expected<int, DummyError> myfuncUnexpected() { return std::unexpected(DummyError{}); }
+
+  std::expected<int, DummyError> myfuncValid() { return 3; }
+
+  std::optional<DummyError> myfuncUnexpectedRaised(int &val)
+  {
+    int val_cur = ANYWHO_OPT(myfuncUnexpected());
+    val = 3 * val_cur;
+
+    return std::nullopt;
+  }
+
+  std::optional<DummyError> myfuncValidRaised(int &val)
+  {
+    int val_cur = ANYWHO_OPT(myfuncValid());
+    val = 3 * val_cur;
+
+    return std::nullopt;
+  }
+
+  std::optional<DummyError> myfuncUnexpectedRaised2(int &val)
+  {
+    ANYWHO_LEGACY(myfuncUnexpectedRaised(val));
+    val = 3 * val;
+
+    return std::nullopt;
+  }
+
+  std::optional<DummyError> myfuncValidRaised2(int &val)
+  {
+    ANYWHO_LEGACY(myfuncValidRaised(val));
+    val = 3 * val;
+
+    return std::nullopt;
+  }
+}// namespace direct_return_optional
 std::expected<int, DummyError> testError() { return std::unexpected(DummyError{}); }
 
 bool positiveOnlySquare(int num, int &output)
@@ -64,19 +103,59 @@ int positiveOnlySquareWithException(int num)
     return num * num;
   }
 }
+
+std::optional<DummyError> positiveOnlySquareWithOptional(int num, int &output)
+{
+  if (num > 0) {
+    output = num * num;
+
+    return std::nullopt;
+  }
+
+  return DummyError{};
+}
+
 }// namespace
 
 TEST_CASE("error get returned with anywho", "[direct_return]")
 {
-  auto result = myfunc0();
+  auto result = direct_return_expected::myfuncUnexpectedRaised();
   REQUIRE(!result.has_value());
   REQUIRE(result.error() == "my_msg");
 }
 TEST_CASE("value get returned with anywho", "[direct_return]")
 {
-  auto result = myfunc1();
+  auto result = direct_return_expected::myfuncValidRaised();
   REQUIRE(result.has_value());
   REQUIRE(result.value() == 9);
+}
+
+TEST_CASE("error get returned with anywho_opt", "[direct_return]")
+{
+  int val = 0;
+  std::optional<DummyError> result = direct_return_optional::myfuncUnexpectedRaised(val);
+  REQUIRE(anywho::has_error(result));
+}
+TEST_CASE("value get returned with anywho_opt", "[direct_return]")
+{
+  int val = 0;
+  std::optional<DummyError> result = direct_return_optional::myfuncValidRaised(val);
+  REQUIRE(!anywho::has_error(result));
+  REQUIRE(val == 9);
+}
+
+TEST_CASE("error get returned with anywho_legacy", "[direct_return]")
+{
+  int val = 0;
+  std::optional<DummyError> result = direct_return_optional::myfuncUnexpectedRaised2(val);
+  REQUIRE(anywho::has_error(result));
+}
+TEST_CASE("value get returned with anywho_legacy", "[direct_return]")
+{
+  int val = 0;
+  std::optional<DummyError> result = direct_return_optional::myfuncValidRaised2(val);
+  REQUIRE(!anywho::has_error(result));
+  REQUIRE(val == 27);
 }
 
 TEST_CASE("fixed string", "[FixedString]")
@@ -252,4 +331,46 @@ TEST_CASE("test error from throwable factory, truth case", "[error_factories]")
     REQUIRE(exp.has_value());
     REQUIRE(exp.value() == 9);
   }
+}
+
+TEST_CASE("test optional<Error> factory, truth case", "[error_factories]")
+{
+  int output = 0;
+  auto ret = positiveOnlySquareWithOptional(3, output);
+  REQUIRE(!anywho::has_error(ret));
+  std::expected<int, DummyError> exp = anywho::make_error(std::move(ret), output);
+  REQUIRE(exp.has_value());
+  REQUIRE(exp.value() == 9);
+}
+
+TEST_CASE("test optional<Error> factory, error case", "[error_factories]")
+{
+  int output = 0;
+  auto ret = positiveOnlySquareWithOptional(-3, output);
+  std::expected<int, DummyError> exp = anywho::make_error(std::move(ret), output);
+  REQUIRE(!exp.has_value());
+}
+
+
+TEST_CASE("test optional<Error> factory with function, truth case", "[error_factories]")
+{
+  // Somehow template argument deduction does not work here, so we need to give it by hand.
+  std::expected<int, DummyError> exp = anywho::make_error<int, DummyError>([]() {
+    int output = 0;
+    auto ret = positiveOnlySquareWithOptional(3, output);
+    return std::make_tuple(ret, output);
+  });
+  REQUIRE(exp.has_value());
+  REQUIRE(exp.value() == 9);
+}
+
+TEST_CASE("test optional<Error> factory with function, error case", "[error_factories]")
+{
+  // Somehow template argument deduction does not work here, so we need to give it by hand.
+  std::expected<int, DummyError> exp = anywho::make_error<int, DummyError>([]() {
+    int output = 0;
+    auto ret = positiveOnlySquareWithOptional(-3, output);
+    return std::make_tuple(ret, output);
+  });
+  REQUIRE(!exp.has_value());
 }

@@ -1,9 +1,6 @@
 #pragma once
-
-#include <expected>
-#include <format>
-
 #include "fixed_string.hpp"
+#include "format.hpp"
 
 namespace anywho {
 /**
@@ -20,7 +17,7 @@ struct Context final
 
   std::string format() const
   {
-    return std::format("{}:{} -> {}", static_cast<std::string>(file), line, static_cast<std::string>(message));
+    return format_ns::format("{}:{} -> {}", static_cast<std::string>(file), line, static_cast<std::string>(message));
   }
 };
 

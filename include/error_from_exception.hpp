@@ -1,8 +1,8 @@
 #pragma once
 
 #include "errors.hpp"
+#include "format.hpp"
 #include <exception>
-#include <format>
 #include <memory>
 #include <string>
 
@@ -20,7 +20,7 @@ public:
   ErrorFromException(const std::shared_ptr<std::exception> &exc) : exc_{ exc } {}
   [[nodiscard]] constexpr std::string message() const override
   {
-    return std::format("error happened with exception '{}'", exc_->what());
+    return format_ns::format("error happened with exception '{}'", exc_->what());
   }
 
   [[nodiscard]] const std::shared_ptr<std::exception> &get_exception_ptr() const { return exc_; }
@@ -30,6 +30,7 @@ private:
   std::shared_ptr<std::exception> exc_;
 };
 
+#if __cplusplus > 202002L
 /**
  * @brief Factory for ErrorFromException. This can be used as a bridge from exception bsed error handling.
  * Example:
@@ -80,6 +81,7 @@ inline std::expected<T, E> make_any_error_from_throwable(std::function<T(void)> 
     return with_context(std::move(exp), { .message = exc.what(), .line = __LINE__, .file = std::string(__FILE__) });
   }
 }
+#endif
 
 
 }// namespace anywho
