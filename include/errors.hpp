@@ -86,5 +86,4 @@ public:
 private:
   std::error_code code_;
 };
-
 }// namespace anywho

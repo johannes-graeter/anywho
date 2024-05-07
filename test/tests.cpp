@@ -39,36 +39,36 @@ namespace direct_return_optional {
 
   std::expected<int, DummyError> myfuncValid() { return 3; }
 
-  std::optional<DummyError> myfuncUnexpectedRaised(int &val)
+  anywho::ErrorState<DummyError> myfuncUnexpectedRaised(int &val)
   {
     int val_cur = ANYWHO_OPT(myfuncUnexpected());
     val = 3 * val_cur;
 
-    return std::nullopt;
+    return anywho::NoError;
   }
 
-  std::optional<DummyError> myfuncValidRaised(int &val)
+  anywho::ErrorState<DummyError> myfuncValidRaised(int &val)
   {
     int val_cur = ANYWHO_OPT(myfuncValid());
     val = 3 * val_cur;
 
-    return std::nullopt;
+    return anywho::NoError;
   }
 
-  std::optional<DummyError> myfuncUnexpectedRaised2(int &val)
+  anywho::ErrorState<DummyError> myfuncUnexpectedRaised2(int &val)
   {
     ANYWHO_LEGACY(myfuncUnexpectedRaised(val));
     val = 3 * val;
 
-    return std::nullopt;
+    return anywho::NoError;
   }
 
-  std::optional<DummyError> myfuncValidRaised2(int &val)
+  anywho::ErrorState<DummyError> myfuncValidRaised2(int &val)
   {
     ANYWHO_LEGACY(myfuncValidRaised(val));
     val = 3 * val;
 
-    return std::nullopt;
+    return anywho::NoError;
   }
 }// namespace direct_return_optional
 std::expected<int, DummyError> testError() { return std::unexpected(DummyError{}); }
@@ -104,12 +104,12 @@ int positiveOnlySquareWithException(int num)
   }
 }
 
-std::optional<DummyError> positiveOnlySquareWithOptional(int num, int &output)
+anywho::ErrorState<DummyError> positiveOnlySquareWithOptional(int num, int &output)
 {
   if (num > 0) {
     output = num * num;
 
-    return std::nullopt;
+    return anywho::NoError;
   }
 
   return DummyError{};
@@ -133,13 +133,13 @@ TEST_CASE("value get returned with anywho", "[direct_return]")
 TEST_CASE("error get returned with anywho_opt", "[direct_return]")
 {
   int val = 0;
-  std::optional<DummyError> result = direct_return_optional::myfuncUnexpectedRaised(val);
+  anywho::ErrorState<DummyError> result = direct_return_optional::myfuncUnexpectedRaised(val);
   REQUIRE(anywho::has_error(result));
 }
 TEST_CASE("value get returned with anywho_opt", "[direct_return]")
 {
   int val = 0;
-  std::optional<DummyError> result = direct_return_optional::myfuncValidRaised(val);
+  anywho::ErrorState<DummyError> result = direct_return_optional::myfuncValidRaised(val);
   REQUIRE(!anywho::has_error(result));
   REQUIRE(val == 9);
 }
@@ -147,13 +147,13 @@ TEST_CASE("value get returned with anywho_opt", "[direct_return]")
 TEST_CASE("error get returned with anywho_legacy", "[direct_return]")
 {
   int val = 0;
-  std::optional<DummyError> result = direct_return_optional::myfuncUnexpectedRaised2(val);
+  anywho::ErrorState<DummyError> result = direct_return_optional::myfuncUnexpectedRaised2(val);
   REQUIRE(anywho::has_error(result));
 }
 TEST_CASE("value get returned with anywho_legacy", "[direct_return]")
 {
   int val = 0;
-  std::optional<DummyError> result = direct_return_optional::myfuncValidRaised2(val);
+  anywho::ErrorState<DummyError> result = direct_return_optional::myfuncValidRaised2(val);
   REQUIRE(!anywho::has_error(result));
   REQUIRE(val == 27);
 }
