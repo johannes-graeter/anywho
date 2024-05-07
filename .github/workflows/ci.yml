@@ -11,7 +11,7 @@ on:
       - develop
 
 env:
-  CLANG_TIDY_VERSION: "17"
+  CLANG_TIDY_VERSION: "18"
   VERBOSE: 1
   ASAN_OPTIONS: "alloc_dealloc_mismatch=0"
 
@@ -38,7 +38,7 @@ jobs:
           # - macos-10.15
           # - windows-2019
         compiler:
-          - llvm-17
+          - llvm-18
           - gcc-13
         generator:
           - "Ninja Multi-Config"
@@ -63,7 +63,7 @@ jobs:
             gcov_executable: gcov-13
             enable_ipo: On
 
-          - compiler: llvm-17
+          - compiler: llvm-18
             enable_ipo: Off
             gcov_executable: "llvm-cov gcov"
 

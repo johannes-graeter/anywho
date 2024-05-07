@@ -43,27 +43,43 @@ RUN add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
 RUN update-alternatives --install /usr/bin/gcc gcc $(which gcc-${GCC_VER}) 100 \
     && update-alternatives --install /usr/bin/g++ g++ $(which g++-${GCC_VER}) 100
 
-ARG LLVM_VER="17"
-# Add clang-${LLVM_VER}
-ARG LLVM_URL="http://apt.llvm.org/${VARIANT}/"
-ARG LLVM_PKG="llvm-toolchain-${VARIANT}-${LLVM_VER}"
-RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - 2>/dev/null && \
-    add-apt-repository -y "deb ${LLVM_URL} ${LLVM_PKG} main" && \
-    apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
-    apt-get install -y \
-        clang-${LLVM_VER} llvm-${LLVM_VER}-dev \
-        lldb-${LLVM_VER} lld-${LLVM_VER} clangd-${LLVM_VER} \
-        libclang-${LLVM_VER}-dev clang-tidy-${LLVM_VER} clang-format-${LLVM_VER} \
-        libc++-${LLVM_VER}-dev libc++abi-${LLVM_VER}-dev \
-    && rm -rf /var/lib/apt/lists/*
+ENV LLVM_VER=17
+RUN wget https://apt.llvm.org/llvm.sh && \
+    sed -i "s/add-apt-repository \"${REPO_NAME}\"/add-apt-repository \"${REPO_NAME}\" -y/g" llvm.sh && \
+    chmod +x llvm.sh && \
+    ./llvm.sh $LLVM_VER -y && \
+    apt install -y clang-$LLVM_VER clang-tidy-$LLVM_VER clang-format-$LLVM_VER \
+    llvm-$LLVM_VER-dev libc++-$LLVM_VER-dev libomp-$LLVM_VER-dev libc++abi-$LLVM_VER-dev libunwind-$LLVM_VER-dev && \
+    rm -rf /var/lib/apt/lists/*
 
-# Set the default clang-tidy, so CMake can find it
-RUN update-alternatives --install /usr/bin/clang-tidy clang-tidy $(which clang-tidy-${LLVM_VER}) 1 \
-# Set the default clang-format, so CMake can find it
-    && update-alternatives --install /usr/bin/clang-format clang-format $(which clang-format-${LLVM_VER}) 1 \
-# Set clang-${LLVM_VER} as default clang
-    && update-alternatives --install /usr/bin/clang clang $(which clang-${LLVM_VER}) 100 \
-    && update-alternatives --install /usr/bin/clang++ clang++ $(which clang++-${LLVM_VER}) 100
+RUN  update-alternatives --install /usr/bin/clang clang /usr/bin/clang-$LLVM_VER $LLVM_VER \
+    --slave /usr/bin/clang++ clang++ /usr/bin/clang++-$LLVM_VER \
+    --slave /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-$LLVM_VER \
+    --slave /usr/bin/clang-format clang-format /usr/bin/clang-format-$LLVM_VER
+
+RUN ln -s /usr/bin/clangd-${LLVM_VER} /usr/bin/clangd
+
+# ARG LLVM_VER="17"
+# # Add clang-${LLVM_VER}
+# ARG LLVM_URL="http://apt.llvm.org/${VARIANT}/"
+# ARG LLVM_PKG="llvm-toolchain-${VARIANT}-${LLVM_VER}"
+# RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - 2>/dev/null && \
+#     add-apt-repository -y "deb ${LLVM_URL} ${LLVM_PKG} main" && \
+#     apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
+#     apt-get install -y \
+#         clang-${LLVM_VER} llvm-${LLVM_VER}-dev \
+#         lldb-${LLVM_VER} lld-${LLVM_VER} clangd-${LLVM_VER} \
+#         libclang-${LLVM_VER}-dev clang-tidy-${LLVM_VER} clang-format-${LLVM_VER} \
+#         libc++-${LLVM_VER}-dev libc++abi-${LLVM_VER}-dev \
+#     && rm -rf /var/lib/apt/lists/*
+
+# # Set the default clang-tidy, so CMake can find it
+# RUN update-alternatives --install /usr/bin/clang-tidy clang-tidy $(which clang-tidy-${LLVM_VER}) 1 \
+# # Set the default clang-format, so CMake can find it
+#     && update-alternatives --install /usr/bin/clang-format clang-format $(which clang-format-${LLVM_VER}) 1 \
+# # Set clang-${LLVM_VER} as default clang
+#     && update-alternatives --install /usr/bin/clang clang $(which clang-${LLVM_VER}) 100 \
+#     && update-alternatives --install /usr/bin/clang++ clang++ $(which clang++-${LLVM_VER}) 100
 
 # Add current cmake/ccmake, from Kitware
 ARG CMAKE_URL="https://apt.kitware.com/ubuntu/"
@@ -88,26 +104,26 @@ RUN apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
     && rm -rf /var/lib/apt/lists/*
 
 # Install include-what-you-use
-ENV IWYU /home/iwyu
-ENV IWYU_BUILD ${IWYU}/build
-ENV IWYU_SRC ${IWYU}/include-what-you-use
-RUN mkdir -p ${IWYU_BUILD} && \
-    git clone --branch clang_${LLVM_VER} \
-        https://github.com/include-what-you-use/include-what-you-use.git \
-        ${IWYU_SRC}
-RUN CC=clang-${LLVM_VER} CXX=clang++-${LLVM_VER} cmake -S ${IWYU_SRC} \
-        -B ${IWYU_BUILD} \
-        -G "Unix Makefiles" -DCMAKE_PREFIX_PATH=/usr/lib/llvm-${LLVM_VER} && \
-    cmake --build ${IWYU_BUILD} -j && \
-    cmake --install ${IWYU_BUILD}
+# ENV IWYU /home/iwyu
+# ENV IWYU_BUILD ${IWYU}/build
+# ENV IWYU_SRC ${IWYU}/include-what-you-use
+# RUN mkdir -p ${IWYU_BUILD} && \
+#     git clone --branch clang_${LLVM_VER} \
+#         https://github.com/include-what-you-use/include-what-you-use.git \
+#         ${IWYU_SRC}
+# RUN CC=clang-${LLVM_VER} CXX=clang++-${LLVM_VER} cmake -S ${IWYU_SRC} \
+#         -B ${IWYU_BUILD} \
+#         -G "Unix Makefiles" -DCMAKE_PREFIX_PATH=/usr/lib/llvm-${LLVM_VER} && \
+#     cmake --build ${IWYU_BUILD} -j && \
+#     cmake --install ${IWYU_BUILD}
 
-# Per https://github.com/include-what-you-use/include-what-you-use#how-to-install:
-# `You need to copy the Clang include directory to the expected location before
-#  running (similarly, use include-what-you-use -print-resource-dir to learn
-#  exactly where IWYU wants the headers).`
-RUN mkdir -p $(include-what-you-use -print-resource-dir 2>/dev/null)
-RUN ln -s $(readlink -f /usr/lib/clang/${LLVM_VER}/include) \
-    $(include-what-you-use -print-resource-dir 2>/dev/null)/include
+# # Per https://github.com/include-what-you-use/include-what-you-use#how-to-install:
+# # `You need to copy the Clang include directory to the expected location before
+# #  running (similarly, use include-what-you-use -print-resource-dir to learn
+# #  exactly where IWYU wants the headers).`
+# RUN mkdir -p $(include-what-you-use -print-resource-dir 2>/dev/null)
+# RUN ln -s $(readlink -f /usr/lib/clang/${LLVM_VER}/include) \
+#     $(include-what-you-use -print-resource-dir 2>/dev/null)/include
 
 # Allow the user to set compiler defaults
 ARG USE_CLANG
