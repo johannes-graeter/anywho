@@ -43,7 +43,7 @@ RUN add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
 RUN update-alternatives --install /usr/bin/gcc gcc $(which gcc-${GCC_VER}) 100 \
     && update-alternatives --install /usr/bin/g++ g++ $(which g++-${GCC_VER}) 100
 
-ENV LLVM_VER=17
+ENV LLVM_VER=18
 RUN wget https://apt.llvm.org/llvm.sh && \
     sed -i "s/add-apt-repository \"${REPO_NAME}\"/add-apt-repository \"${REPO_NAME}\" -y/g" llvm.sh && \
     chmod +x llvm.sh && \

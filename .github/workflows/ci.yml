@@ -11,7 +11,7 @@ on:
       - develop
 
 env:
-  CLANG_TIDY_VERSION: "18"
+  CLANG_VERSION: "18"
   VERBOSE: 1
   ASAN_OPTIONS: "alloc_dealloc_mismatch=0"
 
@@ -131,7 +131,7 @@ jobs:
 
     steps:
       - name: Check for llvm version mismatches
-        if: ${{ contains(matrix.compiler, 'llvm') && !contains(matrix.compiler, env.CLANG_TIDY_VERSION) }}
+        if: ${{ contains(matrix.compiler, 'llvm') && !contains(matrix.compiler, env.CLANG_VERSION) }}
         uses: actions/github-script@v3
         with:
           script: |
@@ -163,7 +163,7 @@ jobs:
           ninja: true
           vcpkg: false
           ccache: true
-          clangtidy: ${{ env.CLANG_TIDY_VERSION }}
+          clangtidy: ${{ env.CLANG_VERSION }}
 
 
           cppcheck: false
@@ -173,13 +173,18 @@ jobs:
 
       - name: Install libc++
         run: |
+          wget https://apt.llvm.org/llvm.sh && \
+          sed -i "s/add-apt-repository \"${REPO_NAME}\"/add-apt-repository \"${REPO_NAME}\" -y/g" llvm.sh && \
+          sudo chmod +x llvm.sh && \
+          sudo ./llvm.sh ${{ env.CLANG_VERSION }} -y && \
           sudo apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
           sudo apt-get install -y \
             gnupg \
-            clang-${{ env.CLANG_TIDY_VERSION}} llvm-${{ env.CLANG_TIDY_VERSION}}-dev \
-            lldb-${{ env.CLANG_TIDY_VERSION}} lld-${{ env.CLANG_TIDY_VERSION}} clangd-${{ env.CLANG_TIDY_VERSION}} \
-            libclang-${{ env.CLANG_TIDY_VERSION}}-dev clang-tidy-${{ env.CLANG_TIDY_VERSION}} clang-format-${{ env.CLANG_TIDY_VERSION}} \
-            libc++-${{ env.CLANG_TIDY_VERSION}}-dev libc++abi-${{ env.CLANG_TIDY_VERSION}}-dev
+            clang-${{ env.CLANG_VERSION }} llvm-${{ env.CLANG_VERSION }}-dev \
+            lldb-${{ env.CLANG_VERSION }} lld-${{ env.CLANG_VERSION }} clangd-${{ env.CLANG_VERSION }} \
+            libclang-${{ env.CLANG_VERSION }}-dev clang-tidy-${{ env.CLANG_VERSION }} clang-format-${{ env.CLANG_VERSION }} \
+            libc++-${{ env.CLANG_VERSION }}-dev libc++abi-${{ env.CLANG_VERSION }}-dev libomp-${{ env.CLANG_VERSION }}-dev \
+            libunwind-${{ env.CLANG_VERSION }}-dev
           sudo apt-get clean
 
       - name: Install gcc
