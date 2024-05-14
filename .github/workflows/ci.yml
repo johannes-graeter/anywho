@@ -185,7 +185,7 @@ jobs:
             libclang-${{ env.LLVM_VERSION }}-dev clang-tidy-${{ env.LLVM_VERSION }} clang-format-${{ env.LLVM_VERSION }} \
             libc++-${{ env.LLVM_VERSION }}-dev libc++abi-${{ env.LLVM_VERSION }}-dev libomp-${{ env.LLVM_VERSION }}-dev \
             libunwind-${{ env.LLVM_VERSION }}-dev
-          rm -rf /var/lib/apt/lists/*
+          apt clean
           update-alternatives --install /usr/bin/clang clang /usr/bin/clang-$LLVM_VERSION $LLVM_VERSION \
           --slave /usr/bin/clang++ clang++ /usr/bin/clang++-$LLVM_VERSION \
           --slave /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-$LLVM_VERSION \
