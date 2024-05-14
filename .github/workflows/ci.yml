@@ -11,7 +11,7 @@ on:
       - develop
 
 env:
-  CLANG_VERSION: "18"
+  LLVM_VERSION: "18"
   VERBOSE: 1
   ASAN_OPTIONS: "alloc_dealloc_mismatch=0"
 
@@ -131,7 +131,7 @@ jobs:
 
     steps:
       - name: Check for llvm version mismatches
-        if: ${{ contains(matrix.compiler, 'llvm') && !contains(matrix.compiler, env.CLANG_VERSION) }}
+        if: ${{ contains(matrix.compiler, 'llvm') && !contains(matrix.compiler, env.LLVM_VERSION) }}
         uses: actions/github-script@v3
         with:
           script: |
@@ -163,7 +163,7 @@ jobs:
           ninja: true
           vcpkg: false
           ccache: true
-          clangtidy: ${{ env.CLANG_VERSION }}
+          clangtidy: ${{ env.LLVM_VERSION }}
 
 
           cppcheck: false
@@ -176,16 +176,21 @@ jobs:
           wget https://apt.llvm.org/llvm.sh && \
           sed -i "s/add-apt-repository \"${REPO_NAME}\"/add-apt-repository \"${REPO_NAME}\" -y/g" llvm.sh && \
           sudo chmod +x llvm.sh && \
-          sudo ./llvm.sh ${{ env.CLANG_VERSION }} -y && \
-          sudo apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
-          sudo apt-get install -y \
+          sudo ./llvm.sh ${{ env.LLVM_VERSION }} -y && \
+          export DEBIAN_FRONTEND=noninteractive && \
+          sudo apt install -y \
             gnupg \
-            clang-${{ env.CLANG_VERSION }} llvm-${{ env.CLANG_VERSION }}-dev \
-            lldb-${{ env.CLANG_VERSION }} lld-${{ env.CLANG_VERSION }} clangd-${{ env.CLANG_VERSION }} \
-            libclang-${{ env.CLANG_VERSION }}-dev clang-tidy-${{ env.CLANG_VERSION }} clang-format-${{ env.CLANG_VERSION }} \
-            libc++-${{ env.CLANG_VERSION }}-dev libc++abi-${{ env.CLANG_VERSION }}-dev libomp-${{ env.CLANG_VERSION }}-dev \
-            libunwind-${{ env.CLANG_VERSION }}-dev
-          sudo apt-get clean
+            clang-${{ env.LLVM_VERSION }} llvm-${{ env.LLVM_VERSION }}-dev \
+            lldb-${{ env.LLVM_VERSION }} lld-${{ env.LLVM_VERSION }} clangd-${{ env.LLVM_VERSION }} \
+            libclang-${{ env.LLVM_VERSION }}-dev clang-tidy-${{ env.LLVM_VERSION }} clang-format-${{ env.LLVM_VERSION }} \
+            libc++-${{ env.LLVM_VERSION }}-dev libc++abi-${{ env.LLVM_VERSION }}-dev libomp-${{ env.LLVM_VERSION }}-dev \
+            libunwind-${{ env.LLVM_VERSION }}-dev
+          rm -rf /var/lib/apt/lists/*
+          update-alternatives --install /usr/bin/clang clang /usr/bin/clang-$LLVM_VERSION $LLVM_VERSION \
+          --slave /usr/bin/clang++ clang++ /usr/bin/clang++-$LLVM_VERSION \
+          --slave /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-$LLVM_VERSION \
+          --slave /usr/bin/clang-format clang-format /usr/bin/clang-format-$LLVM_VERSION
+          ln -s /usr/bin/clangd-${LLVM_VERSION} /usr/bin/clangd
 
       - name: Install gcc
         run: |
