@@ -26,6 +26,13 @@ include(ProjectOptions.cmake)
 
 anywho_setup_options()
 
+# TODO (johannes-graeter) remove this once libc++ is shipped with std::expected
+message(WARNING ${CMAKE_CXX_COMPILER_ID})
+if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang.*")
+  message(WARNING "CLANG with c++")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+endif()
+
 anywho_global_options()
 include(Dependencies.cmake)
 anywho_setup_dependencies()
