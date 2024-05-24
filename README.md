@@ -128,7 +128,7 @@ Note that caused by a bug in libc++ (as of 2024/02/07) you must set ASAN_OPTIONS
 
 
 ## Current support
-* Ubuntu 22.04: Clang-17
+* Ubuntu 22.04: Clang-18
 * Ubuntu 22.04: gcc-13
 
 
