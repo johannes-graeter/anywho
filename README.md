@@ -49,7 +49,7 @@ std::expected<std::string, anywho::GenericError> execute(int input){
 
 // Also you can give context to the unexpected path
 std::expected<std::string, anywho::GenericError> execute_with_context(int input){
-  std::string x = ANYWHO(myFunc(input).with_context({.message="you may not pass!", .file=__FILE__, .line=__LINE__})); 
+  std::string x = ANYWHO(anywho::with_context(myFunc(input), {.message="you may not pass!", .file=__FILE__, .line=__LINE__})); 
   // ... do something with x 
   return x; 
 }
@@ -96,6 +96,27 @@ public:
 };
 ```
 
+Also we provide functionality to use the errors with std::optional in case you need to use it with c++17 code, f.e. in a mixed stack
+```cpp
+// With a function defined like
+std::optional<anywho::GenericError> myFunc(int input);
+
+// The following will directly return anywho::NoError if myFunc has error.
+// ErrorState is just naming sugar for std::optional<anywho::GenericError> to express intent better.
+anywho::ErrorState<anywho::GenericError> execute(int input){
+  std::string x = ANYWHO_OPT(myFunc(input)); 	
+  // ... do something with x 
+  return x; 
+}
+
+// Also you can give context to the unexpected path
+anywho::ErrorState<anywho::GenericError> execute_with_context(int input){
+  std::string x = ANYWHO_OPT(anywho::with_context(myFunc(input), {.message="you may not pass!", .file=__FILE__, .line=__LINE__})); 
+  // ... do something with x 
+  return x; 
+}
+```
+
 To make the transition from your existing error handling mechanism easier we provide error factories for
 * functions that have a boolean indicate success:
 ```cpp
@@ -130,6 +151,10 @@ Note that caused by a bug in libc++ (as of 2024/02/07) you must set ASAN_OPTIONS
 ## Current support
 * Ubuntu 22.04: Clang-18
 * Ubuntu 22.04: gcc-13
+* Ubuntu 20.04: Clang-18
+* Ubuntu 20.04: gcc-13
+
+Note: When compiling with clang18 and libstdc++ there is a problem with std::expected, see troubleshooting.
 
 
 ## Build docs
