@@ -35,7 +35,8 @@ public:
   }
 
   void consume_context(anywho::Context &&context) { contexts_.emplace_back(std::move(context)); }
-  [[nodiscard]] virtual constexpr std::string message() const { return "generic error happened"; }
+  // This can be constexpr in c++20
+  [[nodiscard]] virtual std::string message() const { return "generic error happened"; }
   [[nodiscard]] virtual size_t id() const { return std::hash<std::string>{}(message()); }
 
 protected:
@@ -60,7 +61,8 @@ public:
     message_ = format_ns::format("{}::{}", static_cast<std::string>(message_), context.format());
   }
 
-  [[nodiscard]] virtual constexpr std::string message() const { return "fixed size error happened"; }
+  // This can be constexpr in c++20
+  [[nodiscard]] virtual std::string message() const { return "fixed size error happened"; }
   [[nodiscard]] virtual size_t id() const { return std::hash<std::string>{}(message()); }
 
 private:
@@ -76,7 +78,8 @@ class ErrorFromCode final : public GenericError
 public:
   ErrorFromCode(const std::error_code &code) : code_{ code } {}
   ErrorFromCode(std::error_code &&code) : code_{ std::move(code) } {}
-  [[nodiscard]] constexpr std::string message() const override
+  // This can be constexpr in c++20
+  [[nodiscard]] std::string message() const override
   {
     return format_ns::format("error happened with code {} and message {}", code_.value(), code_.message());
   }

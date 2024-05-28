@@ -1,6 +1,8 @@
 #pragma once
 
+#if __cplusplus > 202002L
 #include "concepts.hpp"
+#endif
 #include "context.hpp"
 #include "has_error.hpp"
 #include <expected>
