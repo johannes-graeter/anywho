@@ -147,6 +147,23 @@ std::expected<int, anywho::ErrorFromException> exp = anywho::make_error_from_thr
 ```
 Note that caused by a bug in libc++ (as of 2024/02/07) you must set ASAN_OPTIONS=alloc_dealloc_mismatch=0 when using the Address sanitizer (see .devcontainer/Dockerfile)
 
+## Shorter version
+Since this may be used a lot a short name is good. We define hence the alias 
+* TRY == ANYWHO
+* TRY_O == ANYWHO_OPT
+* TRY_L == ANYWHO_LEGACY
+For example
+```cpp
+// With a function defined like
+std::expected<std::string, anywho::GenericError> myFunc(int input);
+
+// Also you can give context to the unexpected path
+std::expected<std::string, anywho::GenericError> execute_with_context(int input){
+  std::string x = TRY(anywho::with_context(myFunc(input), {"you may not pass!"})); 
+  // ... do something with x 
+  return x; 
+}
+```
 
 ## Current support
 * Ubuntu 22.04: Clang-18
@@ -155,7 +172,6 @@ Note that caused by a bug in libc++ (as of 2024/02/07) you must set ASAN_OPTIONS
 * Ubuntu 20.04: gcc-13
 
 Note: When compiling with clang18 and libstdc++ there is a problem with std::expected, see troubleshooting.
-
 
 ## Build docs
 We have experimental ReadTheDocs style docs to build (Doxygen >=1.9.8 is recommended and must be preinstalled)

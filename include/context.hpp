@@ -11,12 +11,17 @@ namespace anywho {
  */
 struct Context final
 {
+
   FixedString<128> message;
-  uint line;
-  FixedString<128> file;
+  uint line{ 0 };
+  FixedString<128> file{ "" };
 
   std::string format() const
   {
+    if (static_cast<std::string>(file) == "" && line == 0) {
+      return format_ns::format("{}", static_cast<std::string>(message));
+    }
+
     return format_ns::format("{}:{} -> {}", static_cast<std::string>(file), line, static_cast<std::string>(message));
   }
 };

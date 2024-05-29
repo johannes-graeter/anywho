@@ -165,6 +165,8 @@ TEST_CASE("fixed string", "[FixedString]")
   REQUIRE(static_cast<std::string>(test_string) == "abc");
   const anywho::Context context2{ .message = "test", .line = 10, .file = "la.cpp" };
   REQUIRE(context2.format() == "la.cpp:10 -> test");
+  const anywho::Context context3{ "test" };
+  REQUIRE(context3.format() == "test");
 }
 
 TEST_CASE("with_context", "[with_context]")

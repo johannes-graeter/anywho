@@ -12,30 +12,37 @@
  * gcc, clang and msvc
  *
  */
-#define ANYWHO(expr)                                                           \
-  __extension__({                                                              \
-    auto result = expr;                                                        \
-    if (anywho::has_error(result)) { return std::unexpected(result.error()); } \
-    result.value();                                                            \
+#define ANYWHO(expr)                                                               \
+  __extension__({                                                                  \
+    auto __result = expr;                                                          \
+    if (anywho::has_error(__result)) { return std::unexpected(__result.error()); } \
+    __result.value();                                                              \
   })
 
-#define ANYWHO_OPT(expr)                                                          \
-  __extension__({                                                                 \
-    auto result = expr;                                                           \
-    if (anywho::has_error(result)) { return std::make_optional(result.error()); } \
-    result.value();                                                               \
+// Alias that is shorter
+#define TRY ANYWHO
+
+#define ANYWHO_OPT(expr)                                                              \
+  __extension__({                                                                     \
+    auto __result = expr;                                                             \
+    if (anywho::has_error(__result)) { return std::make_optional(__result.error()); } \
+    __result.value();                                                                 \
   })
+
+#define TRY_O ANYWHO_OPT
 
 #endif// c++23 guard
 /**
  * @brief Same as ANYWHO but for std::optional<Error>. For projects that are bound to version before cpp23.
  *
  */
-#define ANYWHO_LEGACY(expr)                                                       \
-  __extension__({                                                                 \
-    auto result = expr;                                                           \
-    if (anywho::has_error(result)) { return std::make_optional(result.value()); } \
+#define ANYWHO_LEGACY(expr)                                                           \
+  __extension__({                                                                     \
+    auto __result = expr;                                                             \
+    if (anywho::has_error(__result)) { return std::make_optional(__result.value()); } \
   })
+
+#define TRY_LEG ANYWHO_LEGACY
 
 #if defined(__clang__)
 #pragma clang diagnostic pop
