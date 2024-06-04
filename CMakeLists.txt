@@ -16,7 +16,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Set the project name and language
 project(
   anywho
-  VERSION 0.1.1
+  VERSION 0.1.2
   DESCRIPTION ""
   HOMEPAGE_URL "https://github.com/johannes-graeter/anywho"
   LANGUAGES CXX C)
