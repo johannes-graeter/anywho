@@ -44,7 +44,7 @@ template<typename E>
 #endif
 inline std::optional<E> with_context(std::optional<E> &&exp, Context &&context)
 {
-  if (has_error(exp)) { exp = std::optional<E>{ exp.value().consume_context(std::move(context)) }; }
+  if (has_error(exp)) { exp = std::optional<E>( exp.value().consume_context(std::move(context)) ); }
   return exp;
 }
 }// namespace anywho
