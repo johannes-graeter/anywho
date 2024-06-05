@@ -11,3 +11,26 @@
   #include <expected>
   ```
   to hack this. Clang-19 is supposed to fix this.
+  For a more elaborate guard (the bare definition of _cpp_concepts may cause problems in bigger projects) use
+  ```cpp
+  #if defined(__clang__) && __cplusplus > 202002L
+  #if defined(__cpp_concepts)
+  #define ORIGINAL_CPP_CONCEPTS __cpp_concepts
+  #endif
+  #undef __cpp_concepts
+  #define __cpp_concepts 202002L
+  #endif
+
+  #include <anywho/anywho.hpp>
+  #include <expected>
+
+  #if defined(__clang__)
+  #if defined(ORIGINAL_CPP_CONCEPTS)
+  #undef __cpp_concepts
+  #define __cpp_concepts ORIGINAL_CPP_CONCEPTS
+  #undef ORIGINAL_CPP_CONCEPTS
+  #elif defined(__cpp_concepts)
+  #undef __cpp_concepts
+  #endif
+  #endif
+  ```
