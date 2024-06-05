@@ -50,6 +50,6 @@ inline std::optional<E> with_context(std::optional<E> &&exp, Context &&context)
     return std::optional{ err };
   }
 
-  return anywho::NoError;
+  return std::nullopt;
 }
 }// namespace anywho
