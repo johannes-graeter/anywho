@@ -78,7 +78,7 @@ inline std::expected<T, E> make_any_error_from_throwable(std::function<T(void)> 
     return invocable();
   } catch (const Exc &exc) {
     std::expected<T, E> exp = std::unexpected(std::move(error));
-    return with_context(std::move(exp), { .message = exc.what(), .line = __LINE__, .file = std::string(__FILE__) });
+    return with_context(std::move(exp), { exc.what() });
   }
 }
 #endif

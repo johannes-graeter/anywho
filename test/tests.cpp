@@ -1,4 +1,5 @@
 #include "anywho.hpp"
+#include "context.hpp"
 #include "extra.hpp"
 #include <catch2/catch_test_macros.hpp>
 #include <expected>
@@ -163,16 +164,22 @@ TEST_CASE("fixed string", "[FixedString]")
   static constexpr int StringSize = 128;
   const anywho::FixedString<StringSize> test_string{ "abc" };
   REQUIRE(static_cast<std::string>(test_string) == "abc");
-  const anywho::Context context2{ .message = "test", .line = 10, .file = "la.cpp" };
+  const anywho::Context context2{ { .message = "test", .line = 10, .file = "la.cpp" } };
   REQUIRE(context2.format() == "la.cpp:10 -> test");
   const anywho::Context context3{ "test" };
+#if __cplusplus >= 202002L
+  // this should give sth along /workspaces/anywho/test/tests.cpp:169 -> test
+  REQUIRE(context3.format().contains("test"));
+#elif
   REQUIRE(context3.format() == "test");
+#endif
 }
 
 TEST_CASE("with_context", "[with_context]")
 {
   static constexpr int line = 100;
-  auto exp = anywho::with_context(testError(), { .message = "test", .line = line, .file = "test.cpp" });
+  auto exp =
+    anywho::with_context(testError(), anywho::Context{ { .message = "test", .line = line, .file = "test.cpp" } });
   REQUIRE(!exp.has_value());
   REQUIRE(exp.error().format() == "lala");
 }
@@ -182,8 +189,8 @@ TEST_CASE("test GenericError", "[errors]")
   anywho::GenericError err{};
   REQUIRE(err.format() == err.message());
   constexpr int line = 76;
-  err.consume_context({ .message = "abc", .line = line, .file = "tests.cpp" });
-  err.consume_context({ .message = "abc2", .line = line + 1, .file = "tests.cpp" });
+  err.consume_context(anywho::Context{ { .message = "abc", .line = line, .file = "tests.cpp" } });
+  err.consume_context(anywho::Context{ { .message = "abc2", .line = line + 1, .file = "tests.cpp" } });
   REQUIRE(err.format() == err.message() + "::tests.cpp:76 -> abc::tests.cpp:77 -> abc2");
 }
 
@@ -193,8 +200,8 @@ TEST_CASE("test FixedSizeError", "[errors]")
   anywho::FixedSizeError<Size> err{};
   REQUIRE(err.format() == err.message());
   constexpr int line = 76;
-  err.consume_context({ .message = "abc", .line = line, .file = "tests.cpp" });
-  err.consume_context({ .message = "abc2", .line = line + 1, .file = "tests.cpp" });
+  err.consume_context(anywho::Context{ { .message = "abc", .line = line, .file = "tests.cpp" } });
+  err.consume_context(anywho::Context{ { .message = "abc2", .line = line + 1, .file = "tests.cpp" } });
   REQUIRE(err.format() == err.message() + "::tests.cpp:76 -> abc::tests.cpp:77 -> abc2");
 }
 
@@ -203,8 +210,8 @@ TEST_CASE("test FixedSizeError overflow", "[errors]")
   constexpr uint Size = 11;
   anywho::FixedSizeError<Size> err{};
   constexpr int line = 76;
-  err.consume_context({ .message = "abc", .line = line, .file = "tests.cpp" });
-  err.consume_context({ .message = "abc2", .line = line + 1, .file = "tests.cpp" });
+  err.consume_context(anywho::Context{ { .message = "abc", .line = line, .file = "tests.cpp" } });
+  err.consume_context(anywho::Context{ { .message = "abc2", .line = line + 1, .file = "tests.cpp" } });
   REQUIRE(err.format() == err.message() + "::tests.cp");
 }
 
