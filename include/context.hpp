@@ -52,7 +52,7 @@ public:
   Context(ContextString &&msg, std::source_location location = std::source_location::current())
     : message_{ std::move(msg) }, line_{ location.line() }, file_{ location.file_name() }
   {}
-#elif
+#else
   Context(ContextString &&msg) : message_{ std::move(msg) }, line_{ 0 }, file_{ "" } {}
 #endif
 
