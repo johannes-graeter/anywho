@@ -41,16 +41,16 @@ public:
   Context() = default;
 
   explicit Context(ContextParameterProxy &&init)
-    : message_{ std::move(init.message) }, line_{ std::move(init.line) }, file_{ std::move(init.file) }
+    : message_{ std::move(init.message) }, line_{ init.line }, file_{ std::move(init.file) }
   {}
 
   Context(ContextString &&msg, uint line, ContextString &&file)
-    : message_{ std::move(msg) }, line_{ std::move(line) }, file_{ std::move(file) }
+    : message_{ std::move(msg) }, line_{ line }, file_{ std::move(file) }
   {}
 
 #if __cplusplus >= 202002L
-  Context(ContextString &&msg, std::source_location &&location = std::source_location::current())
-    : message_{ std::move(msg) }, line_{ std::move(location.line()) }, file_{ std::move(location.file_name()) }
+  Context(ContextString &&msg, std::source_location location = std::source_location::current())
+    : message_{ std::move(msg) }, line_{ location.line() }, file_{ location.file_name() }
   {}
 #elif
   Context(ContextString &&msg) : message_{ std::move(msg) }, line_{ 0 }, file_{ "" } {}
@@ -58,7 +58,7 @@ public:
 
   std::string format() const
   {
-    if (static_cast<std::string>(file_) == "" && line_ == 0) {
+    if (static_cast<std::string>(file_).empty() && line_ == 0) {
       return format_ns::format("{}", static_cast<std::string>(message_));
     }
 
@@ -66,9 +66,9 @@ public:
   }
 
 private:
-  ContextString message_;
-  uint line_;
-  ContextString file_;
+  ContextString message_{ "" };
+  uint line_{ 0 };
+  ContextString file_{ "" };
 };
 
 }// namespace anywho
