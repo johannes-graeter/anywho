@@ -99,19 +99,30 @@ public:
 Also we provide functionality to use the errors with std::optional in case you need to use it with c++17 code, f.e. in a mixed stack
 ```cpp
 // With a function defined like
-std::optional<anywho::GenericError> myFunc(int input);
+std::optional<anywho::GenericError> myFunc(int& input);
 
-// The following will directly return anywho::NoError if myFunc has error.
+// The following will directly return anywho::GenericError if myFunc has error.
 // ErrorState is just naming sugar for std::optional<anywho::GenericError> to express intent better.
 anywho::ErrorState<anywho::GenericError> execute(int input){
-  std::string x = ANYWHO_OPT(myFunc(input)); 	
+  ANYWHO_LEGACY(myFunc(input)); 	
   // ... do something with x 
   return x; 
 }
 
 // Also you can give context to the unexpected path
 anywho::ErrorState<anywho::GenericError> execute_with_context(int input){
-  std::string x = ANYWHO_OPT(anywho::with_context(myFunc(input), {.message="you may not pass!", .file=__FILE__, .line=__LINE__})); 
+  ANYWHO_LEGACY(anywho::with_context(myFunc(input), {.message="you may not pass!", .file=__FILE__, .line=__LINE__})); 
+  // ... do something with x 
+  return x; 
+}
+
+
+// Also there is a MACRO for bridging expected to optional
+
+// With a function defined like
+std::expected<string, anywho::GenericError> myFunc2(int input);
+anywho::ErrorState<anywho::GenericError> execute2_with_context(int input){
+  std::string x = ANYWHO_OPT(anywho::with_context(myFunc2(input), {.message="you may not pass!", .file=__FILE__, .line=__LINE__})); 
   // ... do something with x 
   return x; 
 }
@@ -151,7 +162,8 @@ Note that caused by a bug in libc++ (as of 2024/02/07) you must set ASAN_OPTIONS
 Since this may be used a lot a short name is good. We define hence the alias 
 * TRY == ANYWHO
 * TRY_O == ANYWHO_OPT
-* TRY_L == ANYWHO_LEGACY
+* TRY_LEG == ANYWHO_LEGACY
+
 For example
 ```cpp
 // With a function defined like
