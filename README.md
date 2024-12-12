@@ -54,9 +54,16 @@ std::expected<std::string, anywho::GenericError> execute_with_context(int input)
   return x; 
 }
 
+// For cpp>=20 
+std::expected<std::string, anywho::GenericError> execute_with_context(int input){
+  std::string x = ANYWHO(anywho::with_context(myFunc(input), {.message="you may not pass!"})); 
+  // ... do something with x 
+  return x; 
+}
+
 // Or shorter
 std::expected<std::string, anywho::GenericError> execute_with_context(int input){
-  std::string x = TRY(anywho::with_context(myFunc(input), {.message="you may not pass!", .file=__FILE__, .line=__LINE__})); 
+  std::string x = TRY(anywho::with_context(myFunc(input), {.message="you may not pass!"})); 
   // ... do something with x 
   return x; 
 }
