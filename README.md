@@ -53,6 +53,13 @@ std::expected<std::string, anywho::GenericError> execute_with_context(int input)
   // ... do something with x 
   return x; 
 }
+
+// Or shorter
+std::expected<std::string, anywho::GenericError> execute_with_context(int input){
+  std::string x = TRY(anywho::with_context(myFunc(input), {.message="you may not pass!", .file=__FILE__, .line=__LINE__})); 
+  // ... do something with x 
+  return x; 
+}
 ```
 
 Also you can (and should!) define your own error types for more finegrained error handling. It must bind to the contract defined by `concepts::Error` (concepts.hpp)
